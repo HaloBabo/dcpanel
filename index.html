@@ -2807,13 +2807,15 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
 
         function sifreGiris() {
             const s = document.getElementById('gateSifre').value;
+            const w = document.getElementById('gateUyari');
+            const uyari = (m) => { if (w) { w.textContent = m; w.classList.remove('hidden'); } };
             if (!s) {
-                triggerNotification('Şifre yazın!', 'error');
+                uyari('Şifre yazın!');
                 return;
             }
             let gapi = (document.getElementById('gateApiUrl') && document.getElementById('gateApiUrl').value.trim()) || '';
             if (!gapi && !localStorage.getItem('basvuru_api_url')) {
-                triggerNotification('Önce Panel API adresini yazın!', 'error');
+                uyari('Önce en üstteki kutuya Panel API adresini yazın!');
                 return;
             }
             if (gapi) {
@@ -2840,6 +2842,7 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
             .catch(err => {
                 const m = String(err.message || err);
                 const ag = (m.indexOf('Failed to fetch') !== -1 || m.indexOf('NetworkError') !== -1 || m.indexOf('Load failed') !== -1 || m.indexOf('zaman asimi') !== -1);
+                uyari('Giriş başarısız: ' + m + (ag ? ' (API adresi değişmiş olabilir, kontrol edin)' : ''));
                 triggerNotification('Giriş başarısız: ' + m + (ag ? ' (API adresi değişmiş olabilir, kontrol edin)' : ''), 'error');
             });
         }
