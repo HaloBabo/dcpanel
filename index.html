@@ -356,8 +356,8 @@
 
     <!-- ACILIS EKRANI -->
     <div id="acilisEkrani" class="fixed inset-0 z-[1000] flex flex-col items-center justify-center gap-4" style="background:#1E1F22;transition:opacity 0.5s ease;">
-        <div class="splash-logo w-20 h-20 rounded-3xl bg-discord-brand flex items-center justify-center text-4xl text-white">
-            <i class="fa-brands fa-discord"></i>
+        <div class="splash-logo" style="width:80px;height:80px;border-radius:24px;overflow:hidden;box-shadow:0 10px 30px rgba(88,101,242,0.4);">
+            <img id="splashLogo" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="" style="width:100%;height:100%;object-fit:cover;">
         </div>
         <p class="text-xs text-discord-subtext font-bold tracking-[0.3em]">BOT PANELİ YÜKLENİYOR</p>
     </div>
@@ -2523,9 +2523,15 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
             const webhook = document.getElementById('settingWebhook').value;
             const basvuruApi = document.getElementById('settingBasvuruApi').value.trim();
 
+            let apiUrl = basvuruApi.replace(/\/+$/, '');
+            if (apiUrl && apiUrl.indexOf('/api/applications') === -1) apiUrl += '/api/applications';
+            if (apiUrl.indexOf('http://') === 0 && window.location.protocol === 'https:') {
+                triggerNotification('Uyarı: https sayfadan http API engellenir, https adres kullanın!', 'error');
+            }
             localStorage.setItem('bot_name', name);
             localStorage.setItem('bot_webhook', webhook);
-            localStorage.setItem('basvuru_api_url', basvuruApi);
+            localStorage.setItem('basvuru_api_url', apiUrl);
+            document.getElementById('settingBasvuruApi').value = apiUrl;
 
             document.getElementById('botName').innerText = name;
             if (typeof updateSidebarBot === 'function') updateSidebarBot();
@@ -2719,6 +2725,28 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
         saatGuncelle();
 
         temaUygula();
+
+        function markaLogoUygula() {
+            var av = null, ad = null;
+            try {
+                av = localStorage.getItem('bot_avatar');
+                ad = localStorage.getItem('bot_ad');
+            } catch (e) {}
+            if (!av) return;
+            var b = document.querySelector('#sidebarBrand > div:first-child');
+            if (b && !b.querySelector('img')) {
+                b.innerHTML = '<img src="' + av + '" class="w-10 h-10 rounded-2xl" style="object-fit:cover" alt="">';
+                b.classList.remove('bg-discord-brand');
+            }
+            var f = document.getElementById('botAvatar');
+            if (f && f.src.indexOf('embed/avatars/0.png') !== -1) f.src = av;
+            var s = document.getElementById('splashLogo');
+            if (s) s.src = av;
+            if (ad) {
+                var bn = document.getElementById('botName');
+                if (bn && bn.innerText === 'NexusBot#0000') bn.innerText = ad;
+            }
+        }
 
         function toggleLoginDropdown() {
             const dropdown = document.getElementById('loginDropdown');
@@ -3277,6 +3305,11 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
                 document.getElementById('botAvatar').src = bot.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png';
                 document.getElementById('botName').innerText = bot.ad || 'Bot';
                 document.getElementById('botStatus').innerText = 'Bot • Cevrimici';
+                try {
+                    if (bot.avatar) localStorage.setItem('bot_avatar', bot.avatar);
+                    if (bot.ad) localStorage.setItem('bot_ad', bot.ad);
+                } catch (e) {}
+                markaLogoUygula();
             })
             .catch(function() {});
         }
@@ -3321,6 +3354,7 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
         }
 
         window.addEventListener('load', function() {
+            try { markaLogoUygula(); } catch (e) {}
             try { handleImplicitCallback(); } catch (e) {}
             try { handleOAuth2Callback(); } catch (e) {}
             const savedClientId = localStorage.getItem('discord_client_id');
