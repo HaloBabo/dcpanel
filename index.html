@@ -373,19 +373,19 @@
             <p id="gateUyari" class="hidden text-xs font-semibold text-discord-red bg-discord-red/10 rounded-lg px-3 py-2 mb-4"></p>
             <div class="space-y-3 text-left" style="margin-top:16px;">
                 <div>
-                    <label class="text-[11px] font-semibold text-discord-subtext block mb-1">Client ID</label>
-                    <input type="text" id="gateClientId" value="1549108116971458610" class="w-full bg-discord-dark text-xs text-white p-3 rounded-xl border border-discord-dark/80 focus:border-discord-brand focus:outline-none font-mono">
-                </div>
-                <div>
-                    <label class="text-[11px] font-semibold text-discord-subtext block mb-1">Redirect URI</label>
-                    <input type="text" id="gateRedirectUri" value="http://localhost:8080" class="w-full bg-discord-dark text-xs text-white p-3 rounded-xl border border-discord-dark/80 focus:border-discord-brand focus:outline-none font-mono">
-                </div>
-                <div>
-                    <label class="text-[11px] font-semibold text-discord-subtext block mb-1">Bot Token</label>
-                    <input type="password" id="gateBotToken" placeholder="Bot Token (opsiyonel)" class="w-full bg-discord-dark text-xs text-white p-3 rounded-xl border border-discord-dark/80 focus:border-discord-brand focus:outline-none font-mono">
+                    <label class="text-[11px] font-semibold text-discord-subtext block mb-1">Panel Şifresi</label>
+                    <input type="password" id="gateSifre" placeholder="••••••••" onkeydown="if(event.key==='Enter')sifreGiris()" class="w-full bg-discord-dark text-xs text-white p-3 rounded-xl border border-discord-dark/80 focus:border-discord-brand focus:outline-none">
                 </div>
             </div>
-            <button onclick="gateLogin()" class="w-full mt-4 bg-discord-brand hover:bg-opacity-90 text-white text-sm font-semibold py-3.5 rounded-xl transition flex items-center justify-center gap-2 shadow-lg" style="box-shadow: 0 8px 25px rgba(88,101,242,0.35);">
+            <button onclick="sifreGiris()" class="w-full mt-4 bg-discord-green text-black text-sm font-bold py-3.5 rounded-xl transition flex items-center justify-center gap-2 shadow-lg">
+                <i class="fa-solid fa-key text-lg"></i> Şifre ile Giriş Yap
+            </button>
+            <div class="flex items-center gap-3 my-4">
+                <div class="flex-1 h-px bg-discord-dark"></div>
+                <span class="text-[10px] text-discord-subtext">veya</span>
+                <div class="flex-1 h-px bg-discord-dark"></div>
+            </div>
+            <button onclick="gateLogin()" class="w-full bg-discord-brand hover:bg-opacity-90 text-white text-sm font-semibold py-3.5 rounded-xl transition flex items-center justify-center gap-2 shadow-lg" style="box-shadow: 0 8px 25px rgba(88,101,242,0.35);">
                 <i class="fa-brands fa-discord text-lg"></i> Discord ile Giris Yap
             </button>
             <p class="text-[10px] text-discord-subtext mt-4">Discord Developer Portal'da Redirect URI olarak <b class="font-mono">http://localhost:8080</b> kayitli olmali.</p>
@@ -533,7 +533,6 @@
                             <div class="space-y-3">
                                 <input type="text" id="discordClientId" value="1549108116971458610" class="w-full bg-discord-dark text-xs text-white p-3 rounded-xl border border-discord-dark/80 focus:border-discord-brand focus:outline-none font-mono">
                                 <input type="text" id="discordRedirectUri" placeholder="Redirect URI (http://localhost:8080)" class="w-full bg-discord-dark text-xs text-white p-3 rounded-xl border border-discord-dark/80 focus:border-discord-brand focus:outline-none font-mono">
-                                <input type="text" id="discordBotToken" placeholder="Bot Token (opsiyonel)" type="password" class="w-full bg-discord-dark text-xs text-white p-3 rounded-xl border border-discord-dark/80 focus:border-discord-brand focus:outline-none font-mono">
                             </div>
                             <button onclick="discordLogin()" class="w-full mt-4 bg-discord-brand hover:bg-opacity-90 text-white text-sm font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2">
                                 <i class="fa-brands fa-discord"></i> Discord ile Giriş Yap
@@ -1117,39 +1116,18 @@
                         </div>
 
                         <div>
-                            <label class="text-xs font-semibold text-discord-subtext block mb-1">Discord Bot Token (Güvenli Alan)</label>
-                            <div class="relative">
-                                <input type="password" id="settingBotToken" value="MTA5Mjg0OTI0ODI5NDgyOTQ4Mg.X92842.ExampleTokenSecret" class="w-full bg-discord-dark text-xs text-white p-3 rounded-xl border border-discord-dark focus:border-discord-brand focus:outline-none font-mono">
-                                <button type="button" onclick="toggleTokenVisibility()" class="absolute right-3 top-3 text-discord-subtext hover:text-white text-xs">
-                                    <i class="fa-solid fa-eye" id="tokenEyeIcon"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <div>
                             <label class="text-xs font-semibold text-discord-subtext block mb-1">Varsayılan Webhook URL</label>
                             <input type="text" id="settingWebhook" value="https://discord.com/api/webhooks/12345/abcde..." class="w-full bg-discord-dark text-xs text-white p-3 rounded-xl border border-discord-dark focus:border-discord-brand focus:outline-none font-mono">
                         </div>
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
-                                <label class="text-xs font-semibold text-discord-subtext block mb-1">Başvuru API URL (VDS)</label>
-                                <input type="text" id="settingBasvuruApi" placeholder="http://VDS_IP:5000/api/applications" class="w-full bg-discord-dark text-xs text-white p-3 rounded-xl border border-discord-dark focus:border-discord-brand focus:outline-none font-mono">
+                                <label class="text-xs font-semibold text-discord-subtext block mb-1">Panel API Adresi (VDS)</label>
+                                <input type="text" id="settingBasvuruApi" placeholder="https://ornek.trycloudflare.com/api/applications" class="w-full bg-discord-dark text-xs text-white p-3 rounded-xl border border-discord-dark focus:border-discord-brand focus:outline-none font-mono">
                             </div>
-                            <div>
-                                <label class="text-xs font-semibold text-discord-subtext block mb-1">Başvuru API Anahtarı</label>
-                                <input type="password" id="settingBasvuruKey" placeholder="bottaki API_KEY" class="w-full bg-discord-dark text-xs text-white p-3 rounded-xl border border-discord-dark focus:border-discord-brand focus:outline-none font-mono">
+                            <div class="flex items-end">
+                                <p class="text-[10px] text-discord-subtext pb-1">Giriş ve erişim yetkileri VDS'teki main.py dosyasından yönetilir. Tarayıcıda token tutulmaz.</p>
                             </div>
-                        </div>
-
-                        <div>
-                            <label class="text-xs font-semibold text-discord-subtext block mb-1">Yetkili Sunucu ID (sadece bu sunucunun yöneticileri girer)</label>
-                            <input type="text" id="settingYetkiliSunucu" placeholder="örn: 849204921" class="w-full bg-discord-dark text-xs text-white p-3 rounded-xl border border-discord-dark focus:border-discord-brand focus:outline-none font-mono">
-                        </div>
-
-                        <div>
-                            <label class="text-xs font-semibold text-discord-subtext block mb-1">İzinli Kullanıcı ID'leri (virgülle ayır, boşsa herkes yöneticilikten geçer)</label>
-                            <input type="text" id="settingIzinliIdler" placeholder="örn: 123456789, 987654321" class="w-full bg-discord-dark text-xs text-white p-3 rounded-xl border border-discord-dark focus:border-discord-brand focus:outline-none font-mono">
                         </div>
 
                         <div>
@@ -1889,12 +1867,12 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
                 return;
             }
             const base = (document.getElementById('settingBasvuruApi') && document.getElementById('settingBasvuruApi').value.trim()) || localStorage.getItem('basvuru_api_url') || '';
-            const k = (document.getElementById('settingBasvuruKey') && document.getElementById('settingBasvuruKey').value.trim()) || localStorage.getItem('basvuru_api_key') || '';
             const root = base.replace(/\/api\/applications.*$/, '');
             fetch(root + '/api/etkinlik', {
                 method: 'POST',
+                credentials: 'include',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ key: k, sunucu: gid, kanal: kid, ad: ad })
+                body: JSON.stringify({ sunucu: gid, kanal: kid, ad: ad })
             })
             .then(function(res) {
                 if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -1912,17 +1890,20 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
             });
         }
 
+        function panelKok() {
+            var base = (document.getElementById('settingBasvuruApi') && document.getElementById('settingBasvuruApi').value.trim()) || localStorage.getItem('basvuru_api_url') || '';
+            return base.replace(/\/api\/applications.*$/, '');
+        }
+
         function dmKok() {
-            const base = (document.getElementById('settingBasvuruApi') && document.getElementById('settingBasvuruApi').value.trim()) || localStorage.getItem('basvuru_api_url') || '';
-            const k = (document.getElementById('settingBasvuruKey') && document.getElementById('settingBasvuruKey').value.trim()) || localStorage.getItem('basvuru_api_key') || '';
-            return { root: base.replace(/\/api\/applications.*$/, ''), k: k };
+            return { root: panelKok() };
         }
 
         function dmYukle() {
             const gid = document.getElementById('dmSunucu').value;
             if (!gid) return;
-            const { root, k } = dmKok();
-            fetch(root + '/api/dm?sunucu=' + encodeURIComponent(gid) + '&key=' + encodeURIComponent(k))
+            const { root } = dmKok();
+            fetch(root + '/api/dm?sunucu=' + encodeURIComponent(gid), { credentials: 'include' })
             .then(function(res) {
                 if (!res.ok) throw new Error('HTTP ' + res.status);
                 return res.json();
@@ -1948,11 +1929,12 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
                 triggerNotification('İki metni de yazın!', 'error');
                 return;
             }
-            const { root, k } = dmKok();
+            const { root } = dmKok();
             fetch(root + '/api/dm', {
                 method: 'POST',
+                credentials: 'include',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ key: k, sunucu: gid, kabul: kabul, ret: ret })
+                body: JSON.stringify({ sunucu: gid, kabul: kabul, ret: ret })
             })
             .then(function(res) {
                 if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -1974,9 +1956,8 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
             const app = applicationsData[anahtar];
             if (!confirm('"' + (app ? app.title : anahtar) + '" kalıcı olarak silinsin mi? Tüm başvuruları da silinir!')) return;
             const base = (document.getElementById('settingBasvuruApi') && document.getElementById('settingBasvuruApi').value.trim()) || localStorage.getItem('basvuru_api_url') || '';
-            const k = (document.getElementById('settingBasvuruKey') && document.getElementById('settingBasvuruKey').value.trim()) || localStorage.getItem('basvuru_api_key') || '';
             const root = base.replace(/\/api\/applications.*$/, '');
-            fetch(root + '/api/etkinlik/' + encodeURIComponent(eid) + '?key=' + encodeURIComponent(k), { method: 'DELETE' })
+            fetch(root + '/api/etkinlik/' + encodeURIComponent(eid), { method: 'DELETE', credentials: 'include' })
             .then(function(res) {
                 if (!res.ok) throw new Error('HTTP ' + res.status);
                 return res.json();
@@ -2055,12 +2036,12 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
             }
             if (!confirm((durum === 'kabul' ? 'Onaylansın' : 'Reddedilsin') + ' mi: ' + r.user + '?')) return;
             const base = (document.getElementById('settingBasvuruApi') && document.getElementById('settingBasvuruApi').value.trim()) || localStorage.getItem('basvuru_api_url') || '';
-            const k = (document.getElementById('settingBasvuruKey') && document.getElementById('settingBasvuruKey').value.trim()) || localStorage.getItem('basvuru_api_key') || '';
             const root = base.replace(/\/api\/applications.*$/, '');
             fetch(root + '/api/karar', {
                 method: 'POST',
+                credentials: 'include',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ key: k, mesaj_id: String(r.mesaj), sunucu: String(r.sunucu), durum: durum })
+                body: JSON.stringify({ mesaj_id: String(r.mesaj), sunucu: String(r.sunucu), durum: durum })
             })
             .then(function(res) {
                 return res.json().then(function(data) {
@@ -2331,70 +2312,50 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
             kutu.innerHTML = '<p class="text-discord-subtext">Test ediliyor...</p>';
             yukBasla();
             const sonuclar = [];
-            const token = (typeof getBotToken === 'function') ? getBotToken() : null;
             const base = (document.getElementById('settingBasvuruApi') && document.getElementById('settingBasvuruApi').value.trim()) || localStorage.getItem('basvuru_api_url') || '';
-            const k = (document.getElementById('settingBasvuruKey') && document.getElementById('settingBasvuruKey').value.trim()) || localStorage.getItem('basvuru_api_key') || '';
             const root = base.replace(/\/api\/applications.*$/, '');
             const zamanAsimli = (url, secenek, ms) => {
                 const c = new AbortController();
                 const t = setTimeout(() => c.abort(), ms || 12000);
-                return fetch(url, Object.assign({}, secenek, { signal: c.signal })).finally(() => clearTimeout(t));
+                const sec = Object.assign({ credentials: 'include' }, secenek, { signal: c.signal });
+                return fetch(url, sec).finally(() => clearTimeout(t));
+            };
+            const sonuc = async (ad, fn) => {
+                try {
+                    const detay = await fn();
+                    sonuclar.push([true, ad, detay]);
+                } catch (e) { sonuclar.push([false, ad, e.name === 'AbortError' ? 'zaman asimi' : e.message]); }
             };
 
-            try {
-                if (!token) throw new Error('Bot Token girilmemis');
-                const r = await zamanAsimli('https://discord.com/api/users/@me', { headers: { Authorization: 'Bot ' + token } });
+            await sonuc('Panel oturumu', async () => {
+                const r = await zamanAsimli(root + '/panel/ben');
+                if (r.status === 401) throw new Error('oturma yok (tekrar giris yapin)');
                 if (!r.ok) throw new Error('HTTP ' + r.status);
                 const b = await r.json();
-                sonuclar.push([true, 'Discord API (bot)', b.global_name || b.username || b.id]);
-            } catch (e) { sonuclar.push([false, 'Discord API (bot)', e.name === 'AbortError' ? 'zaman asimi' : e.message]); }
+                return b.ad || b.id;
+            });
 
-            let ilkSunucu = null;
-            try {
-                const r1 = await zamanAsimli('https://discord.com/api/users/@me/guilds', { headers: { Authorization: 'Bot ' + token } });
-                if (!r1.ok) throw new Error('HTTP ' + r1.status);
-                const gs = await r1.json();
-                if (!Array.isArray(gs) || !gs.length) throw new Error('bot hicbir sunucuda degil');
-                gs.forEach(function(g) { g.id = String(g.id); });
-                ilkSunucu = gs[0];
-                sonuclar.push([true, 'Sunucu listesi', gs.length + ' sunucu (ilk: ' + gs[0].name + ')']);
-            } catch (e) { sonuclar.push([false, 'Sunucu listesi', e.name === 'AbortError' ? 'zaman asimi' : e.message]); }
-
-            try {
-                if (!ilkSunucu) throw new Error('sunucu alinamadi, atlandi');
-                try {
-                    const r2 = await zamanAsimli(`https://discord.com/api/guilds/${ilkSunucu.id}/channels`, { headers: { Authorization: 'Bot ' + token } });
-                    if (!r2.ok) throw new Error('HTTP ' + r2.status);
-                    const ch = await r2.json();
-                    sonuclar.push([true, 'Kanal listesi', ilkSunucu.name + ': ' + (Array.isArray(ch) ? ch.length : 0) + ' kanal (direkt)']);
-                } catch (e2) {
-                    const ch = await vdsKanallar(ilkSunucu.id);
-                    const liste2 = Array.isArray(ch) ? ch : [];
-                    const yaz2 = liste2.filter(c => c.type === 0 || c.type === 5).length;
-                    sonuclar.push([true, 'Kanal listesi', ilkSunucu.name + ': ' + liste2.length + ' kayit, yazilabilir: ' + yaz2 + ' (VDS)']);
-                }
-            } catch (e) { sonuclar.push([false, 'Kanal listesi', e.name === 'AbortError' ? 'zaman asimi' : e.message]); }
-
-            try {
-                if (!base || base.indexOf('VDS_IP') !== -1) throw new Error('API URL girilmemis');
-                const r = await zamanAsimli(root + '/api/health');
-                if (!r.ok) throw new Error('HTTP ' + r.status);
-                sonuclar.push([true, 'VDS erisimi', 'health OK']);
-            } catch (e) { sonuclar.push([false, 'VDS erisimi', e.name === 'AbortError' ? 'zaman asimi' : e.message]); }
-
-            try {
-                const r = await zamanAsimli(base + (base.indexOf('?') === -1 ? '?' : '&') + 'key=' + encodeURIComponent(k));
+            await sonuc('Bot sunuculari', async () => {
+                const r = await zamanAsimli(root + '/panel/api/botsunuculari');
                 if (!r.ok) throw new Error('HTTP ' + r.status);
                 const d = await r.json();
-                sonuclar.push([true, 'Basvuru API', Object.keys(d || {}).length + ' etkinlik']);
-            } catch (e) { sonuclar.push([false, 'Basvuru API', e.name === 'AbortError' ? 'zaman asimi' : e.message]); }
+                return (d.guilds || []).length + ' sunucu' + (d.ping != null ? ', ' + d.ping + ' ms' : '');
+            });
 
-            try {
-                const r = await zamanAsimli(root + '/api/etkinlik/0?key=' + encodeURIComponent(k));
-                if (r.status === 405) sonuclar.push([true, 'Silme ucu', 'aktif']);
-                else if (r.status === 404) sonuclar.push([false, 'Silme ucu', 'eski kod (main.py guncelle!)']);
-                else sonuclar.push([r.ok, 'Silme ucu', 'HTTP ' + r.status]);
-            } catch (e) { sonuclar.push([false, 'Silme ucu', e.name === 'AbortError' ? 'zaman asimi' : e.message]); }
+            await sonuc('Basvuru API', async () => {
+                if (!base || base.indexOf('VDS_IP') !== -1) throw new Error('API URL girilmemis');
+                const r = await zamanAsimli(base);
+                if (!r.ok) throw new Error('HTTP ' + r.status);
+                const d = await r.json();
+                return Object.keys(d || {}).length + ' etkinlik';
+            });
+
+            await sonuc('Silme ucu', async () => {
+                const r = await zamanAsimli(root + '/api/etkinlik/0');
+                if (r.status === 405) return 'aktif';
+                if (r.status === 404) throw new Error('eski kod (main.py guncelle!)');
+                throw new Error('HTTP ' + r.status);
+            });
 
             kutu.innerHTML = sonuclar.map(s =>
                 `<div class="flex items-start gap-2 p-2 rounded-lg ${s[0] ? 'bg-discord-green/10' : 'bg-discord-red/10'}"><span class="font-bold ${s[0] ? 'text-discord-green' : 'text-discord-red'}">${s[0] ? 'OK' : 'HATA'}</span><div><b class="text-white">${s[1]}</b><br><span class="text-discord-subtext">${s[2]}</span></div></div>`
@@ -2403,20 +2364,26 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
             yukBit();
         }
 
-        function vdsMesaj(channelId, msg) {
+        function panelMesaj(channelId, msg) {
             var base = (document.getElementById('settingBasvuruApi') && document.getElementById('settingBasvuruApi').value.trim()) || localStorage.getItem('basvuru_api_url') || '';
-            var k = (document.getElementById('settingBasvuruKey') && document.getElementById('settingBasvuruKey').value.trim()) || localStorage.getItem('basvuru_api_key') || '';
             if (!base || base.indexOf('VDS_IP') !== -1) return Promise.reject(new Error('VDS ayarli degil'));
             var root = base.replace(/\/api\/applications.*$/, '');
-            return fetch(root + '/api/mesaj', {
+            return fetch(root + '/panel/api/mesaj', {
                 method: 'POST',
+                credentials: 'include',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ key: k, kanal: channelId, icerik: msg })
+                body: JSON.stringify({ kanal: channelId, icerik: msg })
             })
             .then(function(r) {
-                if (!r.ok) throw new Error('HTTP ' + r.status);
-                return r.json();
+                return r.json().then(function(data) {
+                    if (!r.ok) throw new Error((data && data.hata) || ('HTTP ' + r.status));
+                    return data;
+                });
             });
+        }
+
+        function vdsMesaj(channelId, msg) {
+            return panelMesaj(channelId, msg);
         }
 
         function mesajBasarili(channelId, yol) {
@@ -2431,7 +2398,6 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
             const sel = document.getElementById('topluKanal');
             const ids = Array.from(sel.selectedOptions).map(o => o.value).filter(Boolean);
             const msg = document.getElementById('topluMesaj').value;
-            const token = (typeof getBotToken === 'function') ? getBotToken() : null;
             if (!ids.length) {
                 triggerNotification('En az bir kanal seçin!', 'error');
                 return;
@@ -2443,26 +2409,10 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
             triggerNotification(ids.length + ' kanala gönderiliyor...', 'info');
             let ok = 0, hata = 0;
             for (const id of ids) {
-                let gitti = false;
-                if (token) {
-                    try {
-                        const res = await fetch(`https://discord.com/api/channels/${id}/messages`, {
-                            method: 'POST',
-                            headers: { Authorization: `Bot ${token}`, 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ content: msg })
-                        });
-                        if (!res.ok) throw new Error('HTTP ' + res.status);
-                        gitti = true;
-                    } catch (err) { gitti = false; }
-                }
-                if (!gitti) {
-                    try {
-                        await vdsMesaj(id, msg);
-                        gitti = true;
-                    } catch (err2) { gitti = false; }
-                }
-                if (gitti) { ok++; bumpDashboardSent(); }
-                else hata++;
+                try {
+                    await panelMesaj(id, msg);
+                    ok++; bumpDashboardSent();
+                } catch (err) { hata++; }
                 await new Promise(r => setTimeout(r, 600));
             }
             triggerNotification(`${ok} gönderildi${hata ? `, ${hata} başarısız` : ''}.`, hata ? 'error' : 'success');
@@ -2475,14 +2425,9 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
             const channelId = document.getElementById('commandChannelId').value.trim();
             const msg = document.getElementById('commandMessage').value;
             const action = (document.querySelector('input[name="actionType"]:checked') || {}).value || 'msg';
-            const token = (typeof getBotToken === 'function') ? getBotToken() : null;
 
             if (!channelId) {
-                triggerNotification('Kanal ID girin!', 'error');
-                return;
-            }
-            if (!token) {
-                triggerNotification('Önce Bot Token girin!', 'error');
+                triggerNotification('Kanal seçin!', 'error');
                 return;
             }
 
@@ -2494,37 +2439,20 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
 
             if (action === 'clear') {
                 triggerNotification('Son mesajlar siliniyor...', 'info');
-                fetch(`https://discord.com/api/channels/${channelId}/messages?limit=100`, {
-                    headers: { Authorization: `Bot ${token}` }
+                fetch(panelKok() + '/panel/api/temizle', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ kanal: channelId })
                 })
-                .then(res => {
-                    if (!res.ok) throw new Error('HTTP ' + res.status + ' (yetki veya kanal ID kontrol edin)');
-                    return res.json();
-                })
-                .then(messages => {
-                    if (!Array.isArray(messages) || messages.length === 0) {
-                        triggerNotification('Kanalda silinecek mesaj yok.', 'info');
-                        return null;
-                    }
-                    if (messages.length === 1) {
-                        return fetch(`https://discord.com/api/channels/${channelId}/messages/${messages[0].id}`, {
-                            method: 'DELETE',
-                            headers: { Authorization: `Bot ${token}` }
-                        }).then(() => [messages[0].id]);
-                    }
-                    return fetch(`https://discord.com/api/channels/${channelId}/messages/bulk-delete`, {
-                        method: 'POST',
-                        headers: { Authorization: `Bot ${token}`, 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ messages: messages.map(m => m.id) })
-                    }).then(res => {
-                        if (!res.ok) throw new Error('HTTP ' + res.status + ' (14 günden eski mesajlar toplu silinemez)');
-                        return messages.map(m => m.id);
-                    });
-                })
-                .then(ids => {
-                    if (!ids) return;
-                    triggerNotification(`${ids.length} mesaj silindi.`, 'success');
-                    panelLog('MOD', `Kanal temizlendi (${ids.length} mesaj).`, 'text-discord-yellow');
+                .then(res => res.json().then(function(data) {
+                    if (!res.ok) throw new Error((data && data.hata) || ('HTTP ' + res.status));
+                    return data;
+                }))
+                .then(data => {
+                    const sayi = (data && data.silinen) || 0;
+                    triggerNotification(`${sayi} mesaj silindi.`, 'success');
+                    panelLog('MOD', `Kanal temizlendi (${sayi} mesaj).`, 'text-discord-yellow');
                 })
                 .catch(err => {
                     triggerNotification('Temizlenemedi: ' + err.message, 'error');
@@ -2537,25 +2465,13 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
                 triggerNotification('Mesaj içeriği yazın!', 'error');
                 return;
             }
-            fetch(`https://discord.com/api/channels/${channelId}/messages`, {
-                method: 'POST',
-                headers: { Authorization: `Bot ${token}`, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ content: msg })
-            })
-            .then(res => {
-                if (!res.ok) throw new Error('HTTP ' + res.status + ' (yetki veya kanal ID kontrol edin)');
-                return res.json();
-            })
+            panelMesaj(channelId, msg)
             .then(() => {
                 mesajBasarili(channelId, '');
             })
             .catch(err => {
-                vdsMesaj(channelId, msg).then(() => {
-                    mesajBasarili(channelId, 'VDS');
-                }).catch(() => {
-                    triggerNotification('Gönderilemedi: ' + err.message, 'error');
-                    panelLog('HATA', 'Mesaj gönderilemedi: ' + err.message, 'text-discord-red');
-                });
+                triggerNotification('Gönderilemedi: ' + err.message, 'error');
+                panelLog('HATA', 'Mesaj gönderilemedi: ' + err.message, 'text-discord-red');
             });
         }
 
@@ -2589,31 +2505,14 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
         function saveSettings(e) {
             e.preventDefault();
             const name = document.getElementById('settingBotName').value;
-            const token = document.getElementById('settingBotToken').value;
             const webhook = document.getElementById('settingWebhook').value;
             const basvuruApi = document.getElementById('settingBasvuruApi').value.trim();
-            const basvuruKey = document.getElementById('settingBasvuruKey').value.trim();
-            const yetkiliSunucu = document.getElementById('settingYetkiliSunucu').value.trim();
-            const izinliIdler = document.getElementById('settingIzinliIdler').value.trim();
 
             localStorage.setItem('bot_name', name);
-            localStorage.setItem('bot_token', token);
             localStorage.setItem('bot_webhook', webhook);
             localStorage.setItem('basvuru_api_url', basvuruApi);
-            localStorage.setItem('basvuru_api_key', basvuruKey);
-            if (token) {
-                localStorage.setItem('discord_bot_token', token);
-                const g = document.getElementById('gateBotToken');
-                if (g) g.value = '';
-                const h = document.getElementById('discordBotToken');
-                if (h) h.value = token;
-            }
-            localStorage.setItem('yetkili_sunucu', yetkiliSunucu);
-            localStorage.setItem('izinli_idler', izinliIdler);
 
             document.getElementById('botName').innerText = name;
-            const loginTokenInput = document.getElementById('discordBotToken');
-            if (loginTokenInput && token) loginTokenInput.value = token;
             if (typeof updateSidebarBot === 'function') updateSidebarBot();
             if (typeof fetchBotData === 'function') fetchBotData();
             if (typeof fetchBasvuruData === 'function') fetchBasvuruData();
@@ -2622,38 +2521,19 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
 
         function loadSavedSettings() {
             const name = localStorage.getItem('bot_name');
-            const token = localStorage.getItem('bot_token');
             const webhook = localStorage.getItem('bot_webhook');
             const basvuruApi = localStorage.getItem('basvuru_api_url');
-            const basvuruKey = localStorage.getItem('basvuru_api_key');
-            const yetkiliSunucu = localStorage.getItem('yetkili_sunucu');
-            const izinliIdler = localStorage.getItem('izinli_idler');
             if (basvuruApi) document.getElementById('settingBasvuruApi').value = basvuruApi;
-            if (basvuruKey) document.getElementById('settingBasvuruKey').value = basvuruKey;
-            if (yetkiliSunucu) document.getElementById('settingYetkiliSunucu').value = yetkiliSunucu;
-            if (izinliIdler) document.getElementById('settingIzinliIdler').value = izinliIdler;
 
             if(name) {
                 document.getElementById('settingBotName').value = name;
                 document.getElementById('botName').innerText = name;
             }
-            if(token) document.getElementById('settingBotToken').value = token;
             if(webhook) {
                 document.getElementById('settingWebhook').value = webhook;
                 document.getElementById('embedTarget').value = webhook;
             }
         }
-
-        function toggleTokenVisibility() {
-            const input = document.getElementById('settingBotToken');
-            const icon = document.getElementById('tokenEyeIcon');
-            if(input.type === 'password') {
-                input.type = 'text';
-                icon.className = 'fa-solid fa-eye-slash';
-            } else {
-                input.type = 'password';
-                icon.className = 'fa-solid fa-eye';
-            }
         }
 
         function filterServers() {
@@ -2855,34 +2735,69 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
             if (gate) gate.classList.remove('hidden-gate');
         }
 
+        function panelKok() {
+            var base = (document.getElementById('settingBasvuruApi') && document.getElementById('settingBasvuruApi').value.trim()) || localStorage.getItem('basvuru_api_url') || '';
+            return base.replace(/\/api\/applications.*$/, '');
+        }
+
+        const SABIT_CLIENT_ID = "1549108116971458610";
+
+        function istemciId() {
+            const el = document.getElementById('discordClientId');
+            if (el && el.value.trim()) return el.value.trim();
+            const g = document.getElementById('gateClientId');
+            if (g && g.value.trim()) return g.value.trim();
+            return localStorage.getItem('discord_client_id') || SABIT_CLIENT_ID;
+        }
+
+        function yonAdresi() {
+            const el = document.getElementById('discordRedirectUri');
+            if (el && el.value.trim()) return el.value.trim();
+            const g = document.getElementById('gateRedirectUri');
+            if (g && g.value.trim()) return g.value.trim();
+            return localStorage.getItem('discord_redirect_uri') || window.location.origin;
+        }
+
         function gateLogin() {
-            var gid = document.getElementById('gateClientId').value.trim();
-            var gr = document.getElementById('gateRedirectUri').value.trim();
-            var gt = document.getElementById('gateBotToken').value.trim();
-            if (gid) document.getElementById('discordClientId').value = gid;
-            if (gr) document.getElementById('discordRedirectUri').value = gr;
-            if (gt) document.getElementById('discordBotToken').value = gt;
             discordLogin();
         }
 
-        function discordLogin() {
-            const clientId = document.getElementById('discordClientId').value.trim();
-            const redirectUri = document.getElementById('discordRedirectUri').value.trim();
-            const token = document.getElementById('discordBotToken').value.trim();
-
-            if (!clientId) {
-                triggerNotification('Lutfen Discord Client ID girin!', 'error');
+        function sifreGiris() {
+            const s = document.getElementById('gateSifre').value;
+            if (!s) {
+                triggerNotification('Şifre yazın!', 'error');
                 return;
             }
+            fetch(panelKok() + '/panel/sifre', {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ sifre: s })
+            })
+            .then(res => res.json().then(function(data) {
+                if (!res.ok) throw new Error((data && data.hata) || ('HTTP ' + res.status));
+                return data;
+            }))
+            .then(data => {
+                document.getElementById('gateSifre').value = '';
+                window.history.replaceState({}, document.title, window.location.pathname);
+                girisOnay(data.kullanici);
+            })
+            .catch(err => {
+                triggerNotification('Giriş başarısız: ' + err.message, 'error');
+            });
+        }
+
+        function discordLogin() {
+            const clientId = istemciId();
+            const redirectUri = yonAdresi();
 
             localStorage.setItem('discord_client_id', clientId);
-            if (redirectUri) localStorage.setItem('discord_redirect_uri', redirectUri);
-            if (token) localStorage.setItem('discord_bot_token', token);
-            updateSidebarBot();
+            localStorage.setItem('discord_redirect_uri', redirectUri);
 
-            const scope = 'identify%20guilds%20connections';
+            const scope = 'identify%20guilds';
             const redirect = redirectUri || window.location.origin;
-            const authUrl = 'https://discord.com/api/oauth2/authorize?client_id=' + clientId + '&redirect_uri=' + encodeURIComponent(redirect) + '&response_type=token&scope=' + scope;
+            const authUrl = 'https://discord.com/api/oauth2/authorize?client_id=' + clientId + '&redirect_uri=' + encodeURIComponent(redirect) + '&response_type=code&scope=' + scope;
             window.location.href = authUrl;
         }
 
@@ -2900,14 +2815,15 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
         }
 
         function showLoggedInUser(user) {
-            user.id = String(user.id);            document.getElementById('loginForm').style.display = 'none';
+            user.id = String(user.id);
+            document.getElementById('loginForm').style.display = 'none';
             document.getElementById('loggedInView').style.display = 'block';
-            var avatarSrc = getAvatarUrl(user);
-            var displayName = getDisplayName(user);
+            var avatarSrc = user.avatar || getAvatarUrl(user);
+            var displayName = user.ad || getDisplayName(user);
             document.getElementById('userAvatar').src = avatarSrc;
             document.getElementById('userDisplayName').innerText = displayName;
             document.getElementById('userDisplayId').innerText = 'ID: ' + user.id;
-            document.getElementById('userGuilds').innerText = '...';
+            document.getElementById('userGuilds').innerText = (user.sunucular != null) ? user.sunucular : '...';
 
             var loginBtn = document.getElementById('loginBtn');
             loginBtn.innerHTML = '<img src="' + avatarSrc + '" class="w-6 h-6 rounded-full" alt=""> <span class="text-sm">' + displayName + '</span>';
@@ -2924,28 +2840,14 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
             }
             hideGate();
             fetchBotData();
-
-            var savedToken = localStorage.getItem('discord_access_token');
-            if (savedToken) {
-                fetch('https://discord.com/api/users/@me/guilds', {
-                    headers: { Authorization: 'Bearer ' + savedToken }
-                })
-                .then(function(res) { return res.json(); })
-                .then(function(guilds) {
-                    if (Array.isArray(guilds)) {
-                        document.getElementById('userGuilds').innerText = guilds.length;
-                    }
-                })
-                .catch(function() {
-                    document.getElementById('userGuilds').innerText = '-';
-                });
-            }
         }
 
         function discordLogout() {
             isLoggedIn = false;
             currentUser = null;
-            localStorage.removeItem('discord_access_token');
+            try {
+                fetch(panelKok() + '/panel/cikis', { method: 'POST', credentials: 'include' }).catch(function() {});
+            } catch (e) {}
             document.getElementById('loginForm').style.display = 'block';
             document.getElementById('loggedInView').style.display = 'none';
             const loginBtn = document.getElementById('loginBtn');
@@ -2975,40 +2877,32 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
             }
 
             if (code) {
-                const clientId = document.getElementById('discordClientId').value || localStorage.getItem('discord_client_id');
-                const redirectUri = document.getElementById('discordRedirectUri').value || localStorage.getItem('discord_redirect_uri') || window.location.origin;
-                triggerNotification('Giris kodu alindi...', 'info');
+                const redirectUri = (document.getElementById('discordRedirectUri') && document.getElementById('discordRedirectUri').value.trim()) || localStorage.getItem('discord_redirect_uri') || window.location.origin;
+                triggerNotification('Giris dogrulaniyor...', 'info');
 
-                fetch('https://discord.com/api/oauth2/token', {
+                fetch(panelKok() + '/panel/giris', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: new URLSearchParams({
-                        client_id: clientId,
-                        client_secret: '',
-                        grant_type: 'authorization_code',
-                        code: code,
-                        redirect_uri: redirectUri,
-                        scope: 'identify guilds'
-                    })
+                    credentials: 'include',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ code: code, redirect_uri: redirectUri })
                 })
-                .then(res => res.json())
+                .then(res => res.json().then(function(data) {
+                    if (!res.ok) throw new Error((data && data.hata) || ('HTTP ' + res.status));
+                    return data;
+                }))
                 .then(data => {
-                    localStorage.setItem('discord_access_token', data.access_token);
-                    return fetch('https://discord.com/api/users/@me', {
-                        headers: { Authorization: 'Bearer ' + data.access_token }
-                    });
-                })
-                .then(res => res.json())
-                .then(userData => {
-                    currentUser = userData;
-                    isLoggedIn = true;
-                    showLoggedInUser(userData);
-                    triggerNotification('Discord ile giris basarili!', 'success');
                     window.history.replaceState({}, document.title, window.location.pathname);
+                    girisOnay(data.kullanici);
                 })
                 .catch(err => {
-                    console.error('Token exchange failed:', err);
-                    triggerNotification('Token islemi basarisiz. Sunucu tarafi backend gerekli.', 'error');
+                    console.error('Giris basarisiz:', err);
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                    var w = document.getElementById('gateUyari');
+                    if (w) {
+                        w.textContent = 'Giriş başarısız: ' + err.message;
+                        w.classList.remove('hidden');
+                    }
+                    triggerNotification('Giriş başarısız: ' + err.message, 'error');
                 });
             }
         }
@@ -3081,9 +2975,7 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
         }
 
         function karaKok() {
-            const base = (document.getElementById('settingBasvuruApi') && document.getElementById('settingBasvuruApi').value.trim()) || localStorage.getItem('basvuru_api_url') || '';
-            const k = (document.getElementById('settingBasvuruKey') && document.getElementById('settingBasvuruKey').value.trim()) || localStorage.getItem('basvuru_api_key') || '';
-            return { root: base.replace(/\/api\/applications.*$/, ''), k: k };
+            return { root: panelKok() };
         }
 
         function karaYukle() {
@@ -3093,9 +2985,9 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
                 kutu.innerHTML = '<p class="text-xs text-discord-subtext">Önce sunucu seçin.</p>';
                 return;
             }
-            const { root, k } = karaKok();
+            const { root } = karaKok();
             kutu.innerHTML = '<p class="text-xs text-discord-subtext">Yükleniyor...</p>';
-            fetch(root + '/api/kara?sunucu=' + encodeURIComponent(gid) + '&key=' + encodeURIComponent(k))
+            fetch(root + '/api/kara?sunucu=' + encodeURIComponent(gid), { credentials: 'include' })
             .then(function(res) {
                 if (!res.ok) throw new Error('HTTP ' + res.status);
                 return res.json();
@@ -3127,11 +3019,12 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
                 triggerNotification('Değer yazın!', 'error');
                 return;
             }
-            const { root, k } = karaKok();
+            const { root } = karaKok();
             fetch(root + '/api/kara', {
                 method: 'POST',
+                credentials: 'include',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ key: k, sunucu: gid, tur: tur, deger: deger })
+                body: JSON.stringify({ sunucu: gid, tur: tur, deger: deger })
             })
             .then(function(res) {
                 if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -3150,8 +3043,8 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
 
         function karaSil(kid) {
             if (!confirm('Kayıt silinsin mi?')) return;
-            const { root, k } = karaKok();
-            fetch(root + '/api/kara/' + kid + '?key=' + encodeURIComponent(k), { method: 'DELETE' })
+            const { root } = karaKok();
+            fetch(root + '/api/kara/' + kid, { method: 'DELETE', credentials: 'include' })
             .then(function(res) {
                 if (!res.ok) throw new Error('HTTP ' + res.status);
                 return res.json();
@@ -3167,10 +3060,9 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
 
         function vdsKanallar(guildId) {
             var base = (document.getElementById('settingBasvuruApi') && document.getElementById('settingBasvuruApi').value.trim()) || localStorage.getItem('basvuru_api_url') || '';
-            var k = (document.getElementById('settingBasvuruKey') && document.getElementById('settingBasvuruKey').value.trim()) || localStorage.getItem('basvuru_api_key') || '';
             if (!base || base.indexOf('VDS_IP') !== -1) return Promise.reject(new Error('VDS ayarli degil'));
             var root = base.replace(/\/api\/applications.*$/, '');
-            return fetch(root + '/api/kanallar?sunucu=' + encodeURIComponent(guildId) + '&key=' + encodeURIComponent(k))
+            return fetch(root + '/api/kanallar?sunucu=' + encodeURIComponent(guildId), { credentials: 'include' })
             .then(function(r) {
                 if (!r.ok) throw new Error('HTTP ' + r.status);
                 return r.json();
@@ -3179,35 +3071,13 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
 
         function yukleKanallar(guildId, hedefId) {
             const sel = document.getElementById(hedefId || 'commandChannelId');
-            const token = (typeof getBotToken === 'function') ? getBotToken() : null;
             if (!sel) return;
-            if (!guildId || !token) {
+            if (!guildId) {
                 sel.innerHTML = '<option value="">Sunucu seçin...</option>';
                 return;
             }
             sel.innerHTML = '<option value="">Yükleniyor...</option>';
-            const kanalIstegi = (deneme) => {
-                const ctrl = new AbortController();
-                const zamanAsimi = setTimeout(() => ctrl.abort(), 15000);
-                return fetch(`https://discord.com/api/guilds/${guildId}/channels`, {
-                    headers: { Authorization: `Bot ${token}` },
-                    signal: ctrl.signal
-                })
-                .then(res => {
-                    clearTimeout(zamanAsimi);
-                    if (!res.ok) throw new Error('HTTP ' + res.status);
-                    return res.json();
-                })
-                .catch(err => {
-                    clearTimeout(zamanAsimi);
-                    if (deneme === 1 && err && err.name !== 'AbortError') {
-                        return new Promise(r => setTimeout(r, 2000)).then(() => kanalIstegi(2));
-                    }
-                    throw err;
-                });
-            };
-            kanalIstegi(1)
-            .catch(() => vdsKanallar(guildId))
+            vdsKanallar(guildId)
             .then(chs => {
                 const liste = Array.isArray(chs) ? chs : [];
                 liste.forEach(function(c) { c.id = String(c.id); });
@@ -3229,34 +3099,24 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
             });
         }
 
-        function getBotToken() {            var fromInput = document.getElementById('discordBotToken') && document.getElementById('discordBotToken').value.trim();
-            var fromGate = document.getElementById('gateBotToken') && document.getElementById('gateBotToken').value.trim();
-            var t = fromInput || fromGate || localStorage.getItem('discord_bot_token') || localStorage.getItem('bot_token');
-            if (!t || t.indexOf('.') === -1) return null;
-            return t;
-        }
-
         function fetchBotData() {
-            var token = getBotToken();
-            if (!token) return;
             var now = Date.now();
             if (now < botFetchBackoffUntil) return;
             if (now - lastBotFetch < 50000) return;
             lastBotFetch = now;
             yukBasla();
-            var t0 = performance.now();
-            fetch('https://discord.com/api/users/@me/guilds?with_counts=true', {
-                headers: { Authorization: 'Bot ' + token }
-            })
+            fetch(panelKok() + '/panel/api/botsunuculari', { credentials: 'include' })
             .then(function(res) {
                 if (res.status === 429) {
                     botFetchBackoffUntil = Date.now() + 120000;
                     throw new Error('API 429 - hiz limiti, 2 dk bekleniyor');
                 }
+                if (res.status === 401) throw new Error('OTURUM YOK (tekrar giris yapin)');
                 if (!res.ok) throw new Error('API ' + res.status);
                 return res.json();
             })
-            .then(function(guilds) {
+            .then(function(data) {
+                var guilds = data.guilds || [];
                 if (!Array.isArray(guilds)) return;
                 useRealData = true;
                 guilds.forEach(function(g) { g.id = String(g.id); });
@@ -3265,21 +3125,26 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
                     vd.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-discord-green animate-pulse"></span> CANLI';
                     vd.className = 'inline-flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-1 rounded-full bg-discord-green/10 text-discord-green';
                 }
-                var ping = Math.round(performance.now() - t0);
+                var ping = (data.ping != null) ? data.ping : null;
                 var sp = document.getElementById('statPing');
-                if (sp) sp.innerText = ping + ' ms';
+                if (sp) sp.innerText = (ping != null) ? ping + ' ms' : '—';
                 var sbp = document.getElementById('sidebarPing');
-                if (sbp) sbp.innerText = ping + ' ms';
+                if (sbp) sbp.innerText = (ping != null) ? ping + ' ms' : '—';
                 var pk = document.getElementById('pingKalite');
                 if (pk) {
-                    var kdurum = ping < 80 ? ['Mükemmel', 'text-discord-green'] : ping < 200 ? ['İyi', 'text-discord-yellow'] : ['Yüksek', 'text-discord-red'];
-                    pk.innerHTML = '<i class="fa-solid fa-bolt"></i> ' + kdurum[0];
-                    pk.className = 'text-xs mt-1 font-medium ' + kdurum[1];
+                    if (ping == null) {
+                        pk.innerHTML = '<i class="fa-solid fa-bolt"></i> ölçülüyor...';
+                        pk.className = 'text-xs text-discord-subtext mt-1 font-medium';
+                    } else {
+                        var kdurum = ping < 80 ? ['Mükemmel', 'text-discord-green'] : ping < 200 ? ['İyi', 'text-discord-yellow'] : ['Yüksek', 'text-discord-red'];
+                        pk.innerHTML = '<i class="fa-solid fa-bolt"></i> ' + kdurum[0];
+                        pk.className = 'text-xs mt-1 font-medium ' + kdurum[1];
+                    }
                 }
                 var sg = document.getElementById('statGuilds');
                 if (sg) sg.innerText = guilds.length;
                 var total = 0;
-                guilds.forEach(function(g) { if (g.approximate_member_count) total += g.approximate_member_count; });
+                guilds.forEach(function(g) { if (g.uyeler) total += g.uyeler; });
                 var su = document.getElementById('statUsers');
                 if (su) su.innerText = total > 0 ? total.toLocaleString('tr-TR') : guilds.length + ' sunucu';
                 renderGuildList(guilds);
@@ -3290,6 +3155,8 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
                 yukBit();
                 if (String(err && err.message).indexOf('429') !== -1) {
                     triggerNotification('Discord hiz limitine takildi, 2 dk sonra tekrar denenecek.', 'info');
+                } else if (String(err && err.message).indexOf('OTURUM') !== -1) {
+                    triggerNotification('Oturum yok, tekrar giriş yapın.', 'error');
                 } else {
                     console.error('Bot verisi alinamadi:', err);
                 }
@@ -3312,7 +3179,7 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
                     if (typeof escHtml === 'function') initials = escHtml(initials);
                     iconHtml = '<div class="w-12 h-12 rounded-2xl bg-discord-brand text-white font-bold flex items-center justify-center text-lg shadow-md">' + initials + '</div>';
                 }
-                var members = g.approximate_member_count ? g.approximate_member_count.toLocaleString('tr-TR') + ' Uye' : 'Uye sayisi gizli';
+                var members = g.uyeler ? g.uyeler.toLocaleString('tr-TR') + ' Uye' : 'Uye sayisi gizli';
                 html += '<div class="server-card bg-discord-dark/50 p-5 rounded-xl border border-discord-dark/80 hover:border-discord-brand/40 transition space-y-4" style="border-left:3px solid ' + renk + '">'
                     + '<div class="flex items-center justify-between"><div class="flex items-center gap-3">' + iconHtml
                     + '<div><h4 class="font-bold text-white text-base server-name">' + gAd + '</h4>'
@@ -3343,9 +3210,8 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
         function fetchBasvuruData() {
             var base = (document.getElementById('settingBasvuruApi') && document.getElementById('settingBasvuruApi').value.trim()) || localStorage.getItem('basvuru_api_url') || '';
             if (!base || base.indexOf('VDS_IP') !== -1) return;
-            var key = (document.getElementById('settingBasvuruKey') && document.getElementById('settingBasvuruKey').value.trim()) || localStorage.getItem('basvuru_api_key') || '';
             yukBasla();
-            fetch(base + (base.indexOf('?') === -1 ? '?' : '&') + 'key=' + encodeURIComponent(key))
+            fetch(base, { credentials: 'include' })
             .then(function(res) {
                 if (!res.ok) throw new Error('HTTP ' + res.status);
                 return res.json();
@@ -3380,88 +3246,37 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
         }
 
         function updateSidebarBot() {
-            var botToken = (document.getElementById('discordBotToken') && document.getElementById('discordBotToken').value.trim()) || localStorage.getItem('discord_bot_token') || localStorage.getItem('bot_token');
-            if (!botToken || botToken.indexOf('.') === -1) return;
-            fetch('https://discord.com/api/users/@me', {
-                headers: { Authorization: 'Bot ' + botToken }
+            fetch(panelKok() + '/panel/api/botbilgi', { credentials: 'include' })
+            .then(function(res) {
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                return res.json();
             })
-            .then(function(res) { return res.json(); })
             .then(function(bot) {
-                if (!bot || !bot.id || bot.bot === false) return;
-                var avatar = bot.avatar ? 'https://cdn.discordapp.com/avatars/' + bot.id + '/' + bot.avatar + '.png?size=64' : 'https://cdn.discordapp.com/embed/avatars/0.png';
-                document.getElementById('botAvatar').src = avatar;
-                var name = bot.global_name || bot.username;
-                if (bot.discriminator && bot.discriminator !== '0') name += '#' + bot.discriminator;
-                document.getElementById('botName').innerText = name;
+                if (!bot || !bot.id) return;
+                document.getElementById('botAvatar').src = bot.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png';
+                document.getElementById('botName').innerText = bot.ad || 'Bot';
                 document.getElementById('botStatus').innerText = 'Bot • Cevrimici';
             })
             .catch(function() {});
         }
 
-        function yetkiKontrol(accessToken) {
-            var gid = (document.getElementById('settingYetkiliSunucu') && document.getElementById('settingYetkiliSunucu').value.trim()) || localStorage.getItem('yetkili_sunucu') || '';
-            if (!gid) return Promise.resolve(true);
-            if (!accessToken) return Promise.resolve(false);
-            return fetch('https://discord.com/api/users/@me/guilds', {
-                headers: { Authorization: 'Bearer ' + accessToken }
-            })
-            .then(function(res) { return res.json(); })
-            .then(function(gs) {
-                var g = (Array.isArray(gs) ? gs : []).find(function(x) { return x.id === gid; });
-                if (!g) return false;
-                if (g.owner) return true;
-                try { return (BigInt(g.permissions) & 8n) !== 0n; } catch (e) { return false; }
-            })
-            .catch(function() { return false; });
-        }
-
-        function izinListesi() {
-            var ham = (document.getElementById('settingIzinliIdler') && document.getElementById('settingIzinliIdler').value.trim()) || localStorage.getItem('izinli_idler') || '';
-            return ham.split(',').map(function(s) { return s.trim(); }).filter(Boolean);
-        }
-
-        function idIzinli(userId) {
-            var liste = izinListesi();
-            if (!liste.length) return true;
-            return liste.indexOf(String(userId)) !== -1;
-        }
-
         function girisReddet(mesaj) {
-            localStorage.removeItem('discord_access_token');
-            currentUser = null;
-            isLoggedIn = false;
             var w = document.getElementById('gateUyari');
             if (w) {
                 w.textContent = mesaj;
                 w.classList.remove('hidden');
             }
+            currentUser = null;
+            isLoggedIn = false;
             showGate();
             triggerNotification('Erişim reddedildi.', 'error');
         }
 
         function girisOnay(userData) {
-            var liste = izinListesi();
-            if (liste.length && liste.indexOf(String(userData.id)) !== -1) {
-                currentUser = userData;
-                isLoggedIn = true;
-                showLoggedInUser(userData);
-                triggerNotification('Discord ile giris basarili! (izinli liste)', 'success');
-                return;
-            }
-            yetkiKontrol(localStorage.getItem('discord_access_token')).then(function(ok) {
-                if (!ok) {
-                    girisReddet('Bu panele sadece sunucunun yöneticileri girebilir.');
-                    return;
-                }
-                if (liste.length) {
-                    girisReddet('Bu panele erişimin yok (izin listesinde değilsin).');
-                    return;
-                }
-                currentUser = userData;
-                isLoggedIn = true;
-                showLoggedInUser(userData);
-                triggerNotification('Discord ile giris basarili!', 'success');
-            });
+            currentUser = userData;
+            isLoggedIn = true;
+            showLoggedInUser(userData);
+            triggerNotification('Discord ile giris basarili!', 'success');
         }
 
         function handleImplicitCallback() {
@@ -3477,22 +3292,8 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
                 return true;
             }
 
-            if (accessToken) {
-                localStorage.setItem('discord_access_token', accessToken);
+            if (accessToken || error) {
                 window.history.replaceState({}, document.title, window.location.pathname);
-                triggerNotification('Giris basarili, bilgiler aliniyor...', 'info');
-
-                fetch('https://discord.com/api/users/@me', {
-                    headers: { Authorization: 'Bearer ' + accessToken }
-                })
-                .then(function(res) { return res.json(); })
-                .then(function(userData) {
-                    girisOnay(userData);
-                })
-                .catch(function(err) {
-                    console.error('User fetch failed:', err);
-                    triggerNotification('Kullanici bilgisi alinamadi.', 'error');
-                });
                 return true;
             }
             return false;
@@ -3501,25 +3302,17 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
         window.addEventListener('load', function() {
             handleImplicitCallback();
             handleOAuth2Callback();
-            var savedAccessToken = localStorage.getItem('discord_access_token');
-            if (savedAccessToken && !currentUser) {
-                fetch('https://discord.com/api/users/@me', {
-                    headers: { Authorization: 'Bearer ' + savedAccessToken }
-                })
-                .then(function(res) { return res.json(); })
-                .then(function(userData) {
-                    if (userData && userData.id) {
-                        girisOnay(userData);
-                    }
-                })
-                .catch(function() {
-                    localStorage.removeItem('discord_access_token');
-                });
-            }
+            fetch(panelKok() + '/panel/ben', { credentials: 'include' })
+            .then(function(res) {
+                if (!res.ok) throw new Error('oturma yok');
+                return res.json();
+            })
+            .then(function(userData) {
+                if (userData && userData.id && !currentUser) girisOnay(userData);
+            })
+            .catch(function() {});
             const savedClientId = localStorage.getItem('discord_client_id');
-            const savedToken = localStorage.getItem('discord_bot_token');
             if (savedClientId) document.getElementById('discordClientId').value = savedClientId;
-            if (savedToken) document.getElementById('discordBotToken').value = savedToken;
             var savedRedirect = localStorage.getItem('discord_redirect_uri');
             if (savedRedirect && document.getElementById('gateRedirectUri')) document.getElementById('gateRedirectUri').value = savedRedirect;
             updateSidebarBot();
