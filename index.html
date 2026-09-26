@@ -1437,6 +1437,8 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
         let currentFiltered = [];
         let currentApp = null;
         let filtreKey = null;
+        let basvuruSayfa = 0;
+        const SAYFA_BOY = 50;
         const appFiltre = { yas: new Set(), orjinal: new Set(), durum: new Set() };
 
         function yasKova(y) {
@@ -1589,6 +1591,7 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
             activeApplicationKey = key;
             if (filtreKey !== key) {
                 filtreKey = key;
+                basvuruSayfa = 0;
                 appFiltre.yas.clear(); appFiltre.orjinal.clear(); appFiltre.durum.clear();
             }
             const app = applicationsData[key];
@@ -1647,14 +1650,18 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
             const etkinlikId = (key || '').indexOf('etkinlik_') === 0 ? key.substring(9) : null;
             const silBtn = etkinlikId ? '<button onclick="etkinlikSil(\'' + key + '\')" class="text-xs bg-discord-red/10 text-discord-red font-semibold px-3 py-1.5 rounded-full hover:bg-discord-red hover:text-white transition flex items-center gap-1.5"><i class="fa-solid fa-trash"></i> Sil</button>' : '';
 
-            const recentRows = filtered.map((r, idx) => {
+            const sayfaToplam = Math.max(1, Math.ceil(filtered.length / SAYFA_BOY));
+            if (basvuruSayfa >= sayfaToplam) basvuruSayfa = 0;
+            const bas = basvuruSayfa * SAYFA_BOY;
+            const recentRows = filtered.slice(bas, bas + SAYFA_BOY).map((r, i) => {
+                const gidx = bas + i;
                 let statusBadge = '';
                 if (r.status) {
                     const sColors = { 'Kabul': 'text-discord-green bg-discord-green/10', 'Ret': 'text-discord-red bg-discord-red/10', 'Bekliyor': 'text-discord-yellow bg-discord-yellow/10' };
                     statusBadge = `<div class="mt-1"><span class="${sColors[r.status] || 'text-discord-subtext bg-discord-dark'} text-[10px] px-2 py-0.5 rounded-md">${r.status}</span></div>`;
                 }
                 return `
-                <tr onclick="showBasvuruDetay(${idx})" class="border-t border-discord-dark/60 hover:bg-discord-dark/40 cursor-pointer transition">
+                <tr onclick="showBasvuruDetay(${gidx})" class="border-t border-discord-dark/60 hover:bg-discord-dark/40 cursor-pointer transition">
                     <td class="py-3 pr-3">
                         <div class="font-semibold text-white text-xs">${escHtml(r.user)}</div>
                         <div class="text-[10px] text-discord-subtext">${escHtml(r.nick)}</div>
@@ -1785,6 +1792,11 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
                             </tbody>
                         </table>
                     </div>
+                    <div class="flex items-center justify-between mt-3">
+                        <button ${basvuruSayfa === 0 ? 'disabled' : ''} onclick="sayfaDegistir(-1)" class="text-xs bg-discord-dark hover:bg-discord-darkest text-discord-light font-semibold px-4 py-2 rounded-lg border border-discord-dark/80 transition ${basvuruSayfa === 0 ? 'opacity-40 cursor-not-allowed' : ''}">← Önceki</button>
+                        <span class="text-[11px] text-discord-subtext font-mono">${filtered.length ? (bas + 1) + '-' + Math.min(bas + SAYFA_BOY, filtered.length) : '0'} / ${filtered.length}</span>
+                        <button ${(basvuruSayfa + 1) >= sayfaToplam ? 'disabled' : ''} onclick="sayfaDegistir(1)" class="text-xs bg-discord-dark hover:bg-discord-darkest text-discord-light font-semibold px-4 py-2 rounded-lg border border-discord-dark/80 transition ${(basvuruSayfa + 1) >= sayfaToplam ? 'opacity-40 cursor-not-allowed' : ''}">Sonraki →</button>
+                    </div>
                 </div>
             `;
 
@@ -1830,7 +1842,13 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
             }
         }
 
+        function sayfaDegistir(yon) {
+            basvuruSayfa = Math.max(0, basvuruSayfa + yon);
+            renderApplicationDetail(activeApplicationKey);
+        }
+
         function setApplicationSearch(value) {
+            basvuruSayfa = 0;
             applicationSearchQuery = value;
             renderApplicationDetail(activeApplicationKey);
             const input = document.getElementById('applicationSearch');
@@ -1841,6 +1859,7 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
         }
 
         function setApplicationDate(value) {
+            basvuruSayfa = 0;
             applicationSearchDate = value;
             renderApplicationDetail(activeApplicationKey);
         }
@@ -1848,6 +1867,7 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
         function clearApplicationFilters() {
             applicationSearchQuery = '';
             applicationSearchDate = '';
+            basvuruSayfa = 0;
             appFiltre.yas.clear(); appFiltre.orjinal.clear(); appFiltre.durum.clear();
             renderApplicationDetail(activeApplicationKey);
         }
