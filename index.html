@@ -2897,6 +2897,7 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
             hideGate();
             fetchBotData();
             updateSidebarBot();
+            if (typeof fetchBasvuruData === 'function') fetchBasvuruData();
             if (String(user.id) === 'sifre') {
                 fetch(panelKok() + '/panel/api/botbilgi', { credentials: 'include' })
                 .then(function(res) {
@@ -3293,7 +3294,9 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
             if (!isLoggedIn) return;
             if (!base || base.indexOf('VDS_IP') !== -1) return;
             yukBasla();
-            fetch(base, { credentials: 'include' })
+            const basvuruCtrl = new AbortController();
+            const basvuruZaman = setTimeout(() => basvuruCtrl.abort(), 20000);
+            fetch(base, { credentials: 'include', signal: basvuruCtrl.signal })
             .then(function(res) {
                 if (!res.ok) throw new Error('HTTP ' + res.status);
                 return res.json();
@@ -3315,14 +3318,21 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
                     if (typeof bannerGuncelle === 'function') bannerGuncelle();
                     if (typeof panelLog === 'function') panelLog('API', 'Başvurular bottan güncellendi.', 'text-discord-green');
                 }
+                clearTimeout(basvuruZaman);
                 yukBit();
             })
             .catch(function(err) {
+                clearTimeout(basvuruZaman);
                 yukBit();
                 console.error('Basvuru API alinamadi:', err);
                 var d = document.getElementById('applicationDetail');
-                if (d && d.querySelector('.spinner') && typeof renderApplicationDetail === 'function' && activeApplicationKey) {
-                    renderApplicationDetail(activeApplicationKey);
+                if (d && d.querySelector('.spinner') && typeof renderApplicationDetail === 'function') {
+                    var k = activeApplicationKey || Object.keys(applicationsData)[0];
+                    if (k && applicationsData[k]) {
+                        renderApplicationDetail(k);
+                    } else {
+                        d.innerHTML = '<div class="p-8 text-center"><p class="font-bold text-white text-lg">Veri alınamadı</p><p class="text-xs text-discord-subtext mt-2">Bağlantı Testi ile kontrol edin.</p></div>';
+                    }
                 }
             });
         }
