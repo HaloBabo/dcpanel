@@ -7,7 +7,7 @@
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js (grafikler) -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts Inter -->
@@ -345,6 +345,13 @@
 </head>
 <body class="bg-discord-darkest text-discord-light font-sans min-h-screen flex flex-col md:flex-row antialiased selection:bg-discord-brand selection:text-white">
     <div id="ustCubuk"></div>
+    <div id="jsHataKutusu" style="display:none;position:fixed;bottom:10px;left:10px;right:10px;z-index:2000;background:#3a0d0d;color:#ffb4b4;font:12px monospace;padding:10px 14px;border-radius:10px;border:1px solid #ED4245;white-space:pre-wrap;"></div>
+    <script>
+    window.addEventListener('error', function(e) {
+        var d = document.getElementById('jsHataKutusu');
+        if (d && e && e.message) { d.style.display = 'block'; d.textContent = 'JS HATASI: ' + e.message + ' (satir ' + (e.lineno || '?') + ')'; }
+    });
+    </script>
 
     <!-- ACILIS EKRANI -->
     <div id="acilisEkrani" class="fixed inset-0 z-[1000] flex flex-col items-center justify-center gap-4" style="background:#1E1F22;transition:opacity 0.5s ease;">
@@ -353,6 +360,12 @@
         </div>
         <p class="text-xs text-discord-subtext font-bold tracking-[0.3em]">BOT PANELİ YÜKLENİYOR</p>
     </div>
+    <script>
+    setTimeout(function() {
+        var sp = document.getElementById('acilisEkrani');
+        if (sp && sp.parentNode) { sp.style.opacity = '0'; setTimeout(function() { if (sp.parentNode) sp.remove(); }, 600); }
+    }, 2500);
+    </script>
 
     <!-- TAM EKRAN GIRIS KAPISI -->
     <div id="loginGate" class="login-gate">
