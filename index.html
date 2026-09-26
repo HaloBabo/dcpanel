@@ -3112,16 +3112,19 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
             });
         }
 
+        var __sonBotCekme = 0;
+        var __botBekleme = 0;
+
         function fetchBotData() {
             var now = Date.now();
-            if (now < botFetchBackoffUntil) return;
-            if (now - lastBotFetch < 50000) return;
-            lastBotFetch = now;
+            if (now < __botBekleme) return;
+            if (now - __sonBotCekme < 50000) return;
+            __sonBotCekme = now;
             yukBasla();
             fetch(panelKok() + '/panel/api/botsunuculari', { credentials: 'include' })
             .then(function(res) {
                 if (res.status === 429) {
-                    botFetchBackoffUntil = Date.now() + 120000;
+                    __botBekleme = Date.now() + 120000;
                     throw new Error('API 429 - hiz limiti, 2 dk bekleniyor');
                 }
                 if (res.status === 401) throw new Error('OTURUM YOK (tekrar giris yapin)');
@@ -3131,7 +3134,8 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
             .then(function(data) {
                 var guilds = data.guilds || [];
                 if (!Array.isArray(guilds)) return;
-                useRealData = true;
+                try { useRealData = true; } catch (e) {}
+                window.__gercekVeri = true;
                 guilds.forEach(function(g) { g.id = String(g.id); });
                 var vd = document.getElementById('veriDurumu');
                 if (vd) {
@@ -3313,8 +3317,8 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
         }
 
         window.addEventListener('load', function() {
-            handleImplicitCallback();
-            handleOAuth2Callback();
+            try { handleImplicitCallback(); } catch (e) {}
+            try { handleOAuth2Callback(); } catch (e) {}
             fetch(panelKok() + '/panel/ben', { credentials: 'include' })
             .then(function(res) {
                 if (!res.ok) throw new Error('oturma yok');
@@ -3361,6 +3365,19 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
                 dropdown.classList.remove('active');
             }
         });
+    </script>
+    <script>
+    window.addEventListener('load', function() {
+        var eksik = [];
+        ['isSimulating', 'useRealData', 'lastBotFetch', 'botFetchBackoffUntil', 'applicationsData', 'renderApplicationDetail', 'switchTab', 'fetchBotData', 'girisOnay'].forEach(function(n) {
+            try { if (typeof eval(n) === 'undefined') eksik.push(n); }
+            catch (e) { eksik.push(n); }
+        });
+        if (eksik.length) {
+            var d = document.getElementById('jsHataKutusu');
+            if (d) { d.style.display = 'block'; d.textContent += '\nEKSIK PARCA: ' + eksik.join(', '); }
+        }
+    });
     </script>
 </body>
 </html>
