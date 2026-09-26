@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- PANEL SURUM: 2026-09-26-C -->
 <html lang="tr" class="dark">
 <head>
     <meta charset="UTF-8">
@@ -402,6 +403,7 @@
                 <i class="fa-brands fa-discord text-lg"></i> Discord ile Giris Yap
             </button>
             <p class="text-[10px] text-discord-subtext mt-4">Discord Developer Portal'da Redirect URI olarak <b class="font-mono">http://localhost:8080</b> kayitli olmali.</p>
+            <p class="text-[9px] text-discord-subtext/60 mt-2 font-mono">sürüm 2026-09-26-C</p>
         </div>
     </div>
 
@@ -3116,6 +3118,7 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
         var __botBekleme = 0;
 
         function fetchBotData() {
+            if (!isLoggedIn) return;
             var now = Date.now();
             if (now < __botBekleme) return;
             if (now - __sonBotCekme < 50000) return;
@@ -3226,6 +3229,7 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
 
         function fetchBasvuruData() {
             var base = (document.getElementById('settingBasvuruApi') && document.getElementById('settingBasvuruApi').value.trim()) || localStorage.getItem('basvuru_api_url') || '';
+            if (!isLoggedIn) return;
             if (!base || base.indexOf('VDS_IP') !== -1) return;
             yukBasla();
             fetch(base, { credentials: 'include' })
@@ -3263,6 +3267,7 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
         }
 
         function updateSidebarBot() {
+            if (!isLoggedIn) return;
             fetch(panelKok() + '/panel/api/botbilgi', { credentials: 'include' })
             .then(function(res) {
                 if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -3319,15 +3324,6 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
         window.addEventListener('load', function() {
             try { handleImplicitCallback(); } catch (e) {}
             try { handleOAuth2Callback(); } catch (e) {}
-            fetch(panelKok() + '/panel/ben', { credentials: 'include' })
-            .then(function(res) {
-                if (!res.ok) throw new Error('oturma yok');
-                return res.json();
-            })
-            .then(function(userData) {
-                if (userData && userData.id && !currentUser) girisOnay(userData);
-            })
-            .catch(function() {});
             const savedClientId = localStorage.getItem('discord_client_id');
             if (savedClientId) document.getElementById('discordClientId').value = savedClientId;
             var savedRedirect = localStorage.getItem('discord_redirect_uri');
