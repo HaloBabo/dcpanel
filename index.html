@@ -2838,7 +2838,9 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
                 girisOnay(data.kullanici);
             })
             .catch(err => {
-                triggerNotification('Giriş başarısız: ' + err.message, 'error');
+                const m = String(err.message || err);
+                const ag = (m.indexOf('Failed to fetch') !== -1 || m.indexOf('NetworkError') !== -1 || m.indexOf('Load failed') !== -1 || m.indexOf('zaman asimi') !== -1);
+                triggerNotification('Giriş başarısız: ' + m + (ag ? ' (API adresi değişmiş olabilir, kontrol edin)' : ''), 'error');
             });
         }
 
@@ -2895,6 +2897,25 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
             hideGate();
             fetchBotData();
             updateSidebarBot();
+            if (String(user.id) === 'sifre') {
+                fetch(panelKok() + '/panel/api/botbilgi', { credentials: 'include' })
+                .then(function(res) {
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+                    return res.json();
+                })
+                .then(function(bot) {
+                    if (!bot || !bot.id) return;
+                    const bav = bot.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png';
+                    const bad = bot.ad || 'Bot';
+                    document.getElementById('userAvatar').src = bav;
+                    document.getElementById('userDisplayName').innerText = bad;
+                    document.getElementById('sidebarUserAvatar').src = bav;
+                    document.getElementById('sidebarUserName').innerText = bad;
+                    const lb = document.getElementById('loginBtn');
+                    if (lb) lb.innerHTML = '<img src="' + bav + '" class="w-6 h-6 rounded-full" alt=""> <span class="text-sm">' + bad + '</span>';
+                })
+                .catch(function() {});
+            }
         }
 
         function discordLogout() {
