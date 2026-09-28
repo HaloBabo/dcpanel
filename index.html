@@ -1316,7 +1316,7 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
                     { text: 'Yaşınız', type: 'number' },
                     { text: 'Minecraft Nickiniz', type: 'text' },
                     { text: 'Hesabınız Orjinal mı?', type: 'choice', options: ['Evet', 'Hayır'] },
-                    { text: 'Eklemek istediğiniz bir şey var mı?', type: 'textarea' }
+                    { text: 'Kuralları onaylıyor musun?', type: 'text' }
                 ],
                 stats: {
                     ages: [
@@ -1348,7 +1348,7 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
                     { text: 'Yaşınız', type: 'number' },
                     { text: 'Minecraft Nickiniz', type: 'text' },
                     { text: 'Hesabınız Orjinal mı?', type: 'choice', options: ['Evet', 'Hayır'] },
-                    { text: 'Eklemek istediğiniz bir şey var mı?', type: 'textarea' }
+                    { text: 'Kuralları onaylıyor musun?', type: 'text' }
                 ],
                 stats: {
                     ages: [
@@ -1378,7 +1378,7 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
                     { text: 'Yaşınız', type: 'number' },
                     { text: 'Minecraft Nickiniz', type: 'text' },
                     { text: 'Hesabınız Orjinal mı?', type: 'choice', options: ['Evet', 'Hayır'] },
-                    { text: 'Eklemek istediğiniz bir şey var mı?', type: 'textarea' }
+                    { text: 'Kuralları onaylıyor musun?', type: 'text' }
                 ],
                 stats: {
                     ages: [
@@ -1408,7 +1408,7 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
                     { text: 'Yaşınız', type: 'number' },
                     { text: 'Minecraft Nickiniz', type: 'text' },
                     { text: 'Hesabınız Orjinal mı?', type: 'choice', options: ['Evet', 'Hayır'] },
-                    { text: 'Eklemek istediğiniz bir şey var mı?', type: 'textarea' }
+                    { text: 'Kuralları onaylıyor musun?', type: 'text' }
                 ],
                 stats: {
                     ages: [
@@ -2001,6 +2001,7 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
             const cevapla = (qtext) => {
                 const t = (qtext || '').toLocaleLowerCase('tr-TR');
                 if (t.indexOf('nick') !== -1 || t.indexOf('minecraft') !== -1) return r.nick || '—';
+                if (t.indexOf('daha önce') !== -1 || t.indexOf('daha once') !== -1) return r.lma || '—';
                 if (t.indexOf('yaş') !== -1 || t.indexOf('yas') !== -1) return (r.age ?? '—');
                 if (t.indexOf('orijinal') !== -1 || t.indexOf('orjinal') !== -1) return r.original || '—';
                 return r.note || '—';
