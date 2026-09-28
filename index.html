@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- PANEL SURUM: 2026-09-26-D -->
+<!-- PANEL SURUM: 2026-09-26-E -->
 <html lang="tr" class="dark">
 <head>
     <meta charset="UTF-8">
@@ -420,7 +420,7 @@
                 <i class="fa-brands fa-discord text-lg"></i> Discord ile Giris Yap
             </button>
             <p class="text-[10px] text-discord-subtext mt-4">Discord Developer Portal'da Redirect URI olarak <b class="font-mono">http://localhost:8080</b> kayitli olmali.</p>
-            <p class="text-[9px] text-discord-subtext/60 mt-2 font-mono">sürüm 2026-09-26-D</p>
+            <p class="text-[9px] text-discord-subtext/60 mt-2 font-mono">sürüm 2026-09-26-E</p>
         </div>
     </div>
 
@@ -1231,7 +1231,7 @@
 
                         <div>
                             <label class="text-xs font-semibold text-discord-subtext block mb-1">Oniks Siyahı (koyu modda zeminler simsiyah)</label>
-                            <button type="button" id="oniksBtn" onclick="oniksDegistir()" class="text-xs font-semibold px-4 py-2 rounded-lg border border-discord-dark transition"></button>
+                            <button type="button" id="oniksBtn" onclick="var o=localStorage.getItem('oniks')==='1';localStorage.setItem('tema','dark');document.documentElement.classList.add('dark');document.documentElement.classList.remove('light');localStorage.setItem('oniks',o?'':'1');document.documentElement.classList.toggle('oniks-acik',!o);" class="text-xs font-semibold px-4 py-2 rounded-lg border border-discord-dark bg-discord-dark text-discord-light transition hover:bg-discord-darkest">Oniks Siyahı</button>
                         </div>
 
                         <div>
@@ -3064,7 +3064,8 @@
 
         function temaRenk(r) {
             localStorage.setItem('renk_tema', r);
-        temaRenkUygula();
+            temaRenkUygula();
+        }
 
         function oniksUygula() {
             const acik = localStorage.getItem('oniks') === '1';
@@ -3087,7 +3088,6 @@
         }
 
         oniksUygula();
-        }
 
         temaRenkUygula();
 
