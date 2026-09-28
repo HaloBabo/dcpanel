@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Discord Bot Dashboard</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%235865F2'/%3E%3Ccircle cx='22' cy='26' r='7' fill='white'/%3E%3Ccircle cx='42' cy='26' r='7' fill='white'/%3E%3Cpath d='M18 44c4 5 10 7 14 7s10-2 14-7' stroke='white' stroke-width='5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js (grafikler) -->
@@ -736,7 +737,7 @@
                                 </div>
                                 <div>
                                     <h4 class="font-semibold text-white text-sm">API Entegrasyonu</h4>
-                                    <p class="text-xs text-discord-subtext">Express/Discord.js ayarları</p>
+                                    <p class="text-xs text-discord-subtext">Python bot ayarları</p>
                                 </div>
                             </button>
                         </div>
@@ -1139,6 +1140,52 @@
                         <div><span class="text-discord-yellow">[2026-09-24 19:05:22] [WARN]</span> Shard #0 gecikmesi yükseldi: 120ms</div>
                     </div>
                 </div>
+
+                <div class="bg-discord-darker p-6 rounded-2xl border border-discord-dark/50">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="font-bold text-white text-lg flex items-center gap-2">
+                                <i class="fa-solid fa-clock-rotate-left text-discord-fuchsia"></i> İşlem Geçmişi
+                            </h3>
+                            <p class="text-xs text-discord-subtext">Kim, ne zaman, ne yaptı.</p>
+                        </div>
+                        <button onclick="denetimYukle()" class="text-xs bg-discord-dark hover:bg-discord-darkest text-discord-light px-3 py-1.5 rounded-lg border border-discord-dark/80 transition">
+                            <i class="fa-solid fa-rotate-right"></i> Yenile
+                        </button>
+                    </div>
+                    <div id="kilitli-denetim">
+                        <p class="text-[11px] text-discord-subtext mb-2">Bu bölüm kilitli. Açmak için panel şifreni yaz.</p>
+                        <div class="flex gap-2">
+                            <input type="password" id="kilit-denetim" placeholder="Panel şifresi" onkeydown="if(event.key==='Enter')kilitAc('denetim','denetimYukle')" class="flex-1 bg-discord-dark text-xs text-white p-2.5 rounded-xl border border-discord-dark focus:border-discord-brand focus:outline-none">
+                            <button onclick="kilitAc('denetim','denetimYukle')" class="text-xs bg-discord-brand text-white font-semibold px-4 py-2 rounded-xl hover:bg-opacity-90 transition">Aç</button>
+                        </div>
+                    </div>
+                    <div id="icerik-denetim" style="display:none">
+                        <div class="flex flex-wrap gap-2 mb-3">
+                            <button onclick="denetimYukle('')" class="denetim-kat text-[11px] px-3 py-1.5 rounded-lg border border-discord-dark/80 text-discord-light bg-discord-dark hover:bg-discord-darkest transition" data-kat="">Tümü</button>
+                            <button onclick="denetimYukle('giris')" class="denetim-kat text-[11px] px-3 py-1.5 rounded-lg border border-discord-dark/80 text-discord-light bg-discord-dark hover:bg-discord-darkest transition" data-kat="giris">Giriş</button>
+                            <button onclick="denetimYukle('karar')" class="denetim-kat text-[11px] px-3 py-1.5 rounded-lg border border-discord-dark/80 text-discord-light bg-discord-dark hover:bg-discord-darkest transition" data-kat="karar">Kabul/Ret</button>
+                            <button onclick="denetimYukle('etkinlik')" class="denetim-kat text-[11px] px-3 py-1.5 rounded-lg border border-discord-dark/80 text-discord-light bg-discord-dark hover:bg-discord-darkest transition" data-kat="etkinlik">Etkinlik</button>
+                            <button onclick="denetimYukle('site')" class="denetim-kat text-[11px] px-3 py-1.5 rounded-lg border border-discord-dark/80 text-discord-light bg-discord-dark hover:bg-discord-darkest transition" data-kat="site">Site</button>
+                        </div>
+                        <div class="overflow-x-auto bg-discord-dark/30 rounded-xl border border-discord-dark/70">
+                            <table class="w-full text-left min-w-[640px]">
+                                <thead>
+                                    <tr class="text-[10px] uppercase tracking-wider text-discord-subtext">
+                                        <th class="py-3 px-3">Zaman</th>
+                                        <th class="py-3 px-3">Kim</th>
+                                        <th class="py-3 px-3">Kategori</th>
+                                        <th class="py-3 px-3">İşlem</th>
+                                        <th class="py-3 px-3">Detay</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="denetimListe">
+                                    <tr><td colspan="5" class="py-6 text-center text-xs text-discord-subtext">Yükleniyor...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </section>
 
             <!-- TAB 6: BOT SETTINGS -->
@@ -1217,13 +1264,51 @@
                             </div>
                         </div>
 
+                        <div class="bg-discord-dark/40 p-4 rounded-xl border border-discord-dark/70 space-y-3">
+                            <h4 class="font-semibold text-white text-sm"><i class="fa-solid fa-key text-discord-yellow mr-1"></i> Panel Şifresi Değiştir</h4>
+                            <div id="kilitli-sifre">
+                                <p class="text-[11px] text-discord-subtext">Bu bölüm kilitli. Açmak için panel şifreni yaz.</p>
+                                <div class="flex gap-2 mt-2">
+                                    <input type="password" id="kilit-sifre" placeholder="Panel şifresi" onkeydown="if(event.key==='Enter')kilitAc('sifre')" class="flex-1 bg-discord-dark text-xs text-white p-2.5 rounded-xl border border-discord-dark focus:border-discord-brand focus:outline-none">
+                                    <button type="button" onclick="kilitAc('sifre')" class="text-xs bg-discord-brand text-white font-semibold px-4 py-2 rounded-xl hover:bg-opacity-90 transition">Aç</button>
+                                </div>
+                            </div>
+                            <div id="icerik-sifre" style="display:none" class="space-y-3">
+                                <input type="password" id="sifreEski" placeholder="Eski şifre" class="w-full bg-discord-dark text-xs text-white p-2.5 rounded-xl border border-discord-dark focus:border-discord-brand focus:outline-none">
+                                <input type="password" id="sifreYeni" placeholder="Yeni şifre (en az 8 karakter)" class="w-full bg-discord-dark text-xs text-white p-2.5 rounded-xl border border-discord-dark focus:border-discord-brand focus:outline-none">
+                                <input type="password" id="sifreYeni2" placeholder="Yeni şifre (tekrar)" class="w-full bg-discord-dark text-xs text-white p-2.5 rounded-xl border border-discord-dark focus:border-discord-brand focus:outline-none">
+                                <button type="button" onclick="sifreDegistir()" class="text-xs bg-discord-brand text-white font-semibold px-4 py-2.5 rounded-xl hover:bg-opacity-90 transition">Şifreyi Değiştir</button>
+                            </div>
+                        </div>
+
+                        <div class="bg-discord-dark/40 p-4 rounded-xl border border-discord-dark/70 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <h4 class="font-semibold text-white text-sm"><i class="fa-solid fa-users text-discord-brand mr-1"></i> Aktif Oturumlar</h4>
+                                <button type="button" onclick="tumOturumKapat()" class="text-xs bg-discord-dark hover:bg-discord-darkest text-discord-light px-3 py-1.5 rounded-lg border border-discord-dark/80 transition">Diğerlerini Kapat</button>
+                            </div>
+                            <div id="kilitli-oturum">
+                                <p class="text-[11px] text-discord-subtext">Bu bölüm kilitli. Açmak için panel şifreni yaz.</p>
+                                <div class="flex gap-2 mt-2">
+                                    <input type="password" id="kilit-oturum" placeholder="Panel şifresi" onkeydown="if(event.key==='Enter')kilitAc('oturum','oturumYukle')" class="flex-1 bg-discord-dark text-xs text-white p-2.5 rounded-xl border border-discord-dark focus:border-discord-brand focus:outline-none">
+                                    <button type="button" onclick="kilitAc('oturum','oturumYukle')" class="text-xs bg-discord-brand text-white font-semibold px-4 py-2 rounded-xl hover:bg-opacity-90 transition">Aç</button>
+                                </div>
+                            </div>
+                            <div id="icerik-oturum" style="display:none" class="space-y-2">
+                                <div id="oturumListe" class="space-y-2"></div>
+                            </div>
+                        </div>
+
                         <div class="bg-discord-dark/40 p-4 rounded-xl border border-discord-dark/70">
                             <div class="flex items-center justify-between mb-2">
                                 <h4 class="font-semibold text-white text-sm"><i class="fa-solid fa-stethoscope text-discord-green mr-1"></i> Bağlantı Testi</h4>
-                                <button type="button" onclick="baglantiTesti()" class="text-xs bg-discord-brand hover:bg-opacity-90 text-white font-semibold px-4 py-2 rounded-lg transition">Test Et</button>
+                                <div class="flex gap-2">
+                                    <button type="button" onclick="ozdenetimCalistir()" class="text-xs bg-discord-dark hover:bg-discord-darkest text-discord-light font-semibold px-4 py-2 rounded-lg border border-discord-dark/80 transition">Sistem Kontrolü</button>
+                                    <button type="button" onclick="baglantiTesti()" class="text-xs bg-discord-brand hover:bg-opacity-90 text-white font-semibold px-4 py-2 rounded-lg transition">Test Et</button>
+                                </div>
                             </div>
                             <p class="text-[10px] text-discord-subtext mb-2">Discord API + VDS bağlantılarını tek tek dener, sorunu yazar.</p>
                             <div id="baglantiSonuc" class="space-y-1.5 text-xs font-mono"></div>
+                            <div id="ozdenetimSonuc" class="space-y-1.5 text-xs font-mono mt-2"></div>
                         </div>
 
                         <div class="pt-2">
@@ -1235,62 +1320,41 @@
                 </div>
             </section>
 
-            <!-- TAB 7: INTEGRATION GUIDE (API) -->
+            <!-- TAB 7: KURULUM REHBERI -->
             <section id="tab-guide" class="tab-content hidden space-y-6">
                 <div class="bg-discord-darker p-6 rounded-2xl border border-discord-dark/50 space-y-6">
                     <div>
                         <h3 class="font-bold text-white text-lg flex items-center gap-2">
-                            <i class="fa-solid fa-book text-discord-brand"></i> Web Sitesini Botunuza Bağlama Rehberi
+                            <i class="fa-solid fa-book text-discord-brand"></i> Kurulum Rehberi
                         </h3>
-                        <p class="text-xs text-discord-subtext">Bu frontend arayüzünü kendi Node.js / Discord.js botunuza bağlamak için 2 kolay yöntem vardır.</p>
+                        <p class="text-xs text-discord-subtext">Bot + panel kurulumu adım adım.</p>
                     </div>
 
-                    <!-- Method 1: Webhook -->
+                    <!-- Adim 1: Bot -->
                     <div class="bg-discord-dark p-4 rounded-xl border border-discord-darkest space-y-2">
-                        <span class="text-xs font-bold text-discord-green uppercase tracking-wider">Yöntem 1: Webhook Kullanımı (En Kolay)</span>
-                        <p class="text-xs text-discord-light">Hiçbir ek backend yazmadan, doğrudan Discord Webhook URL'inizi "Embed Tasarımcısı" paneline yapıştırarak sunucunuza şık mesajlar gönderebilirsiniz.</p>
+                        <span class="text-xs font-bold text-discord-green uppercase tracking-wider">1. Botu çalıştırma (VDS)</span>
+                        <div class="bg-discord-darkest p-4 rounded-xl font-mono text-xs text-discord-light overflow-x-auto border border-discord-dark">pip install discord.py flask<br>python main.py</div>
+                        <p class="text-xs text-discord-light">main.py üstündeki TOKEN, DISCORD_CLIENT_SECRET ve PANEL_SIFRE alanlarını doldurun. İlk açılışta slash komutların listeye düşmesi 1 saati bulabilir.</p>
                     </div>
 
-                    <!-- Method 2: Express Server -->
-                    <div class="space-y-3">
-                        <span class="text-xs font-bold text-discord-brand uppercase tracking-wider">Yöntem 2: Express REST API (Tam Kontrol)</span>
-                        <p class="text-xs text-discord-subtext">Botunuza bir Express.js sunucusu ekleyerek websitenizden gelen istekleri canlı olarak işleyin:</p>
-
-                        <div class="bg-discord-darkest p-4 rounded-xl font-mono text-xs text-discord-light overflow-x-auto border border-discord-dark">
-<pre class="text-discord-light">
-<span class="text-discord-fuchsia">const</span> express = <span class="text-discord-brand">require</span>(<span class="text-discord-green">'express'</span>);
-<span class="text-discord-fuchsia">const</span> { Client, GatewayIntentBits } = <span class="text-discord-brand">require</span>(<span class="text-discord-green">'discord.js'</span>);
-<span class="text-discord-fuchsia">const</span> app = express();
-app.use(express.json());
-
-<span class="text-discord-fuchsia">const</span> client = <span class="text-discord-fuchsia">new</span> Client({ intents: [GatewayIntentBits.Guilds] });
-
-<span class="text-discord-subtext">// Bot İstatistik Endpoint'i</span>
-app.get(<span class="text-discord-green">'/api/stats'</span>, (req, res) => {
-    res.json({
-        guilds: client.guilds.cache.size,
-        users: client.users.cache.size,
-        ping: client.ws.ping,
-        status: client.user ? <span class="text-discord-green">'online'</span> : <span class="text-discord-red">'offline'</span>
-    });
-});
-
-<span class="text-discord-subtext">// Web Dashboard'dan Mesaj Gönderme</span>
-app.post(<span class="text-discord-green">'/api/send-message'</span>, <span class="text-discord-fuchsia">async</span> (req, res) => {
-    <span class="text-discord-fuchsia">const</span> { channelId, content } = req.body;
-    <span class="text-discord-fuchsia">const</span> channel = <span class="text-discord-fuchsia">await</span> client.channels.fetch(channelId);
-    <span class="text-discord-fuchsia">if</span> (channel) {
-        <span class="text-discord-fuchsia">await</span> channel.send(content);
-        <span class="text-discord-fuchsia">return</span> res.json({ success: <span class="text-discord-brand">true</span> });
-    }
-    res.status(<span class="text-discord-yellow">404</span>).json({ error: <span class="text-discord-green">'Kanal bulunamadı'</span> });
-});
-
-app.listen(<span class="text-discord-yellow">3000</span>, () => console.log(<span class="text-discord-green">'Dashboard API 3000 portunda aktif'</span>));
-client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
-</pre>
-                        </div>
+                    <!-- Adim 2: Panel -->
+                    <div class="bg-discord-dark p-4 rounded-xl border border-discord-darkest space-y-2">
+                        <span class="text-xs font-bold text-discord-brand uppercase tracking-wider">2. Paneli bağlama</span>
+                        <p class="text-xs text-discord-light">Bot & Api Ayarları → Panel API Adresi kutusuna botun adresini yazın (<span class="font-mono">https://....trycloudflare.com/api/applications</span>). Site girişinde şifrenizi kullanın.</p>
                     </div>
+
+                    <!-- Adim 3: Komutlar -->
+                    <div class="bg-discord-dark p-4 rounded-xl border border-discord-darkest space-y-2">
+                        <span class="text-xs font-bold text-discord-yellow uppercase tracking-wider">3. Komut listesi</span>
+                        <p class="text-xs text-discord-light font-mono">/etkinlik_ac • /etkinlik_kapat • !etkinlik_sil • /oncelikli_kanal • /onceliksiz_kanal • /verilecek_rol • /karaliste_ekle • /karaliste_sil • /karaliste_liste • !kayit_istatistik • /basvurum</p>
+                    </div>
+
+                    <!-- Adim 4: Sorun giderme -->
+                    <div class="bg-discord-dark p-4 rounded-xl border border-discord-darkest space-y-2">
+                        <span class="text-xs font-bold text-discord-red uppercase tracking-wider">4. Sorun giderme</span>
+                        <p class="text-xs text-discord-light">Önce Bot & Api Ayarları → Bağlantı Testi + Sistem Kontrolü çalıştırın. 401 = tekrar giriş yapın. 403 = anahtar/şifre yanlış. Zaman aşımı = bot kapalı ya da tunnel adresi değişmiş.</p>
+                    </div>
+
                 </div>
             </section>
 
@@ -1990,6 +2054,202 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
             });
         }
 
+        function kilidiGoster(alan) {
+            const l = document.getElementById('kilitli-' + alan);
+            const c = document.getElementById('icerik-' + alan);
+            if (l) l.style.display = 'block';
+            if (c) c.style.display = 'none';
+        }
+
+        function kilitAc(alan, sonra) {
+            const inp = document.getElementById('kilit-' + alan);
+            const s = inp ? inp.value : '';
+            if (!s) {
+                triggerNotification('Kilit şifresini yazın!', 'error');
+                return;
+            }
+            fetch(panelKok() + '/panel/kilit-ac', {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ sifre: s })
+            })
+            .then(function(res) {
+                return res.json().then(function(data) {
+                    if (!res.ok) throw new Error((data && data.hata) || ('HTTP ' + res.status));
+                    return data;
+                });
+            })
+            .then(function() {
+                if (inp) inp.value = '';
+                document.getElementById('kilitli-' + alan).style.display = 'none';
+                document.getElementById('icerik-' + alan).style.display = 'block';
+                if (typeof sonra === 'function') sonra();
+                else if (sonra && typeof window[sonra] === 'function') window[sonra]();
+            })
+            .catch(function(err) {
+                triggerNotification('Kilit açılamadı: ' + err.message, 'error');
+            });
+        }
+
+        function sifreDegistir() {
+            const e = document.getElementById('sifreEski').value;
+            const n1 = document.getElementById('sifreYeni').value;
+            const n2 = document.getElementById('sifreYeni2').value;
+            if (!e || !n1 || !n2) {
+                triggerNotification('Üç alanı da doldurun!', 'error');
+                return;
+            }
+            if (n1 !== n2) {
+                triggerNotification('Yeni şifreler uyuşmuyor!', 'error');
+                return;
+            }
+            fetch(panelKok() + '/panel/api/sifre-degistir', {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ eski: e, yeni: n1 })
+            })
+            .then(function(res) {
+                return res.json().then(function(data) {
+                    if (!res.ok) throw new Error((data && data.hata) || ('HTTP ' + res.status));
+                    return data;
+                });
+            })
+            .then(function() {
+                document.getElementById('sifreEski').value = '';
+                document.getElementById('sifreYeni').value = '';
+                document.getElementById('sifreYeni2').value = '';
+                triggerNotification('Şifre değiştirildi.', 'success');
+                if (typeof panelLog === 'function') panelLog('AYAR', 'Panel şifresi değiştirildi.', 'text-discord-green');
+            })
+            .catch(function(err) {
+                if (String(err.message).indexOf('kilitli') !== -1) kilidiGoster('sifre');
+                triggerNotification('Değiştirilemedi: ' + err.message, 'error');
+            });
+        }
+
+        const KAT_ADI = { giris: 'Giriş', karar: 'Karar', etkinlik: 'Etkinlik', site: 'Site' };
+        const KAT_RENK = { giris: 'text-discord-brand bg-discord-brand/10', karar: 'text-discord-green bg-discord-green/10', etkinlik: 'text-discord-yellow bg-discord-yellow/10', site: 'text-discord-fuchsia bg-discord-fuchsia/10' };
+
+        function denetimYukle(kat) {
+            kat = kat || '';
+            fetch(panelKok() + '/panel/api/denetim?kategori=' + encodeURIComponent(kat) + '&limit=100', { credentials: 'include' })
+            .then(function(res) {
+                return res.json().then(function(data) {
+                    if (!res.ok) throw new Error((data && data.hata) || ('HTTP ' + res.status));
+                    return data;
+                });
+            })
+            .then(function(liste) {
+                const kutu = document.getElementById('denetimListe');
+                if (!Array.isArray(liste) || !liste.length) {
+                    kutu.innerHTML = '<tr><td colspan="5" class="py-6 text-center text-xs text-discord-subtext">Kayıt yok.</td></tr>';
+                    return;
+                }
+                kutu.innerHTML = liste.map(function(x) {
+                    return `<tr class="border-t border-discord-dark/60"><td class="py-2.5 pr-3 text-xs text-discord-subtext font-mono whitespace-nowrap">${x.zaman || ''}</td><td class="py-2.5 px-3 text-xs text-white font-medium">${(typeof escHtml === 'function') ? escHtml(x.aktor || '') : (x.aktor || '')}</td><td class="py-2.5 px-3 text-xs"><span class="${KAT_RENK[x.kategori] || 'text-discord-subtext bg-discord-dark'} px-2 py-0.5 rounded-md font-semibold">${KAT_ADI[x.kategori] || x.kategori || ''}</span></td><td class="py-2.5 px-3 text-xs text-discord-light">${(typeof escHtml === 'function') ? escHtml(x.islem || '') : (x.islem || '')}</td><td class="py-2.5 pl-3 text-xs text-discord-subtext">${(typeof escHtml === 'function') ? escHtml(x.detay || '') : (x.detay || '')}</td></tr>`;
+                }).join('');
+            })
+            .catch(function(err) {
+                if (String(err.message).indexOf('kilitli') !== -1) kilidiGoster('denetim');
+                else triggerNotification('Yüklenemedi: ' + err.message, 'error');
+            });
+        }
+
+        function oturumYukle() {
+            fetch(panelKok() + '/panel/api/oturumlar', { credentials: 'include' })
+            .then(function(res) {
+                return res.json().then(function(data) {
+                    if (!res.ok) throw new Error((data && data.hata) || ('HTTP ' + res.status));
+                    return data;
+                });
+            })
+            .then(function(liste) {
+                const kutu = document.getElementById('oturumListe');
+                if (!Array.isArray(liste) || !liste.length) {
+                    kutu.innerHTML = '<p class="text-xs text-discord-subtext">Aktif oturum yok.</p>';
+                    return;
+                }
+                kutu.innerHTML = liste.map(function(o) {
+                    return `<div class="flex items-center justify-between gap-2 bg-discord-dark/60 px-3 py-2 rounded-xl border border-discord-dark/80"><div class="text-xs min-w-0"><span class="text-white font-semibold">${(typeof escHtml === 'function') ? escHtml(o.kullanici || '') : (o.kullanici || '')}</span>${o.bu ? ' <span class="text-[10px] text-discord-green bg-discord-green/10 px-1.5 py-0.5 rounded font-bold">bu cihaz</span>' : ''}<div class="text-[10px] text-discord-subtext font-mono truncate">${o.ip || ''} • son: ${o.son || '—'}</div></div><button onclick="oturumKapat('${o.sid}', ${o.bu ? 'true' : 'false'})" class="text-discord-subtext hover:text-discord-red text-xs px-2 flex-shrink-0"><i class="fa-solid fa-right-from-bracket"></i></button></div>`;
+                }).join('');
+            })
+            .catch(function(err) {
+                if (String(err.message).indexOf('kilitli') !== -1) kilidiGoster('oturum');
+                else triggerNotification('Yüklenemedi: ' + err.message, 'error');
+            });
+        }
+
+        function oturumKapat(sid, benim) {
+            if (!confirm('Oturum kapatılsın mı?')) return;
+            fetch(panelKok() + '/panel/api/oturumlar', {
+                method: 'DELETE',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ sid: sid })
+            })
+            .then(function(res) {
+                return res.json().then(function(data) {
+                    if (!res.ok) throw new Error((data && data.hata) || ('HTTP ' + res.status));
+                    return data;
+                });
+            })
+            .then(function() {
+                if (benim && typeof discordLogout === 'function') discordLogout();
+                else oturumYukle();
+                triggerNotification('Oturum kapatıldı.', 'success');
+            })
+            .catch(function(err) {
+                triggerNotification('Kapatılamadı: ' + err.message, 'error');
+            });
+        }
+
+        function tumOturumKapat() {
+            if (!confirm('Bu cihaz dışındaki tüm oturumlar kapatılsın mı?')) return;
+            fetch(panelKok() + '/panel/api/oturumlar', {
+                method: 'DELETE',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ tumu: true })
+            })
+            .then(function(res) {
+                return res.json().then(function(data) {
+                    if (!res.ok) throw new Error((data && data.hata) || ('HTTP ' + res.status));
+                    return data;
+                });
+            })
+            .then(function() {
+                oturumYukle();
+                triggerNotification('Diğer oturumlar kapatıldı.', 'success');
+            })
+            .catch(function(err) {
+                if (String(err.message).indexOf('kilitli') !== -1) kilidiGoster('oturum');
+                else triggerNotification('Kapatılamadı: ' + err.message, 'error');
+            });
+        }
+
+        function ozdenetimCalistir() {
+            const kutu = document.getElementById('ozdenetimSonuc');
+            if (!kutu) return;
+            kutu.innerHTML = '<p class="text-xs text-discord-subtext">Denetleniyor...</p>';
+            fetch(panelKok() + '/panel/api/ozdenetim', { credentials: 'include' })
+            .then(function(res) {
+                return res.json().then(function(data) {
+                    if (!res.ok) throw new Error((data && data.hata) || ('HTTP ' + res.status));
+                    return data;
+                });
+            })
+            .then(function(rapor) {
+                kutu.innerHTML = (Array.isArray(rapor) ? rapor : []).map(function(s) {
+                    return `<div class="flex items-start gap-2 p-2 rounded-lg ${s.durum ? 'bg-discord-green/10' : 'bg-discord-red/10'}"><span class="font-bold ${s.durum ? 'text-discord-green' : 'text-discord-red'}">${s.durum ? 'OK' : 'HATA'}</span><div><b class="text-white">${s.ad}</b><br><span class="text-discord-subtext">${s.detay || ''}</span></div></div>`;
+                }).join('') || '<p class="text-xs text-discord-subtext">Boş rapor.</p>';
+            })
+            .catch(function(err) {
+                kutu.innerHTML = '<p class="text-xs text-discord-red">Çalışmadı: ' + err.message + '</p>';
+            });
+        }
+
         function etkinlikSil(anahtar) {
             const eid = (anahtar || '').substring(9);
             if (!eid) return;
@@ -2279,9 +2539,9 @@ client.login(<span class="text-discord-green">'BOT_TOKENINIZ'</span>);
             const time = new Date().toLocaleTimeString();
             const entry = `<div><span class="${color || 'text-discord-green'}">[${time}] [${escHtml(type)}]</span> ${escHtml(msg)}</div>`;
             const fullLog = document.getElementById('fullTerminalLog');
-            if (fullLog) { fullLog.innerHTML += entry; fullLog.scrollTop = fullLog.scrollHeight; }
+            if (fullLog) { fullLog.innerHTML += entry; fullLog.scrollTop = fullLog.scrollHeight; while (fullLog.children.length > 300) fullLog.removeChild(fullLog.firstChild); }
             const miniLog = document.getElementById('miniLogContainer');
-            if (miniLog) { miniLog.innerHTML += entry; miniLog.scrollTop = miniLog.scrollHeight; }
+            if (miniLog) { miniLog.innerHTML += entry; miniLog.scrollTop = miniLog.scrollHeight; while (miniLog.children.length > 50) miniLog.removeChild(miniLog.firstChild); }
             const lu = document.getElementById('lastUpdatedTime');
             if (lu) lu.innerText = time;
         }
