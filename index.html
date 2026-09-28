@@ -348,6 +348,9 @@
         .light .skeleton { background: linear-gradient(90deg, #E4E7EB 25%, #F4F6F8 50%, #E4E7EB 75%); background-size: 800px 100%; }
         /* Genel bakim */
         html { scroll-behavior: smooth; }
+        /* Kritik: Tailwind CDN gecikse bile sekmeler gizli kalsin */
+        .tab-content.hidden { display: none !important; }
+        #komutPaleti.hidden { display: none !important; }
         #statGrid h3 { font-variant-numeric: tabular-nums; }
         .login-gate-card { border: 1px solid transparent; background: linear-gradient(#2B2D31, #2B2D31) padding-box, linear-gradient(135deg, #5865F2, #EB459E) border-box !important; }
         .light .login-gate-card { background: linear-gradient(#FFFFFF, #FFFFFF) padding-box, linear-gradient(135deg, #5865F2, #EB459E) border-box !important; }
@@ -1230,8 +1233,6 @@
                             <label class="text-xs font-semibold text-discord-subtext block mb-1">Oniks Siyahı (koyu modda zeminler simsiyah)</label>
                             <button type="button" id="oniksBtn" onclick="oniksDegistir()" class="text-xs font-semibold px-4 py-2 rounded-lg border border-discord-dark transition"></button>
                         </div>
-                            </div>
-                        </div>
 
                         <div>
                             <label class="text-xs font-semibold text-discord-subtext block mb-1">Yazı Tipi</label>
@@ -1245,8 +1246,12 @@
                         <div class="bg-discord-dark/40 p-4 rounded-xl border border-discord-dark/70 space-y-3">
                             <div class="flex items-center justify-between">
                                 <h4 class="font-semibold text-white text-sm"><i class="fa-solid fa-envelope-open-text text-discord-fuchsia mr-1"></i> Sonuç DM Metinleri</h4>
-                                <button type="button" onclick="dmKaydet()" class="text-xs bg-discord-brand hover:bg-opacity-90 text-white font-semibold px-4 py-2 rounded-lg transition">Kaydet</button>
+                                <div class="flex gap-2">
+                                    <button type="button" onclick="dmKaydet()" class="text-xs bg-discord-brand hover:bg-opacity-90 text-white font-semibold px-4 py-2 rounded-lg transition">Kaydet</button>
+                                    <button type="button" onclick="katlaToggle('kat-dm', this)" class="text-xs bg-discord-dark hover:bg-discord-darkest text-discord-light px-3 py-2 rounded-lg border border-discord-dark/80 transition"><i class="fa-solid fa-chevron-down kat-ok transition" style="display:inline-block"></i></button>
+                                </div>
                             </div>
+                            <div id="kat-dm" class="hidden space-y-3">
                             <p class="text-[10px] text-discord-subtext">Onay/reddedince kullanıcıya giden özel mesaj. <b class="font-mono">{etkinlik}</b> ve <b class="font-mono">{sunucu}</b> yazarsan otomatik dolar.</p>
                             <div>
                                 <label class="text-xs font-semibold text-discord-subtext block mb-1">Sunucu</label>
@@ -1262,10 +1267,15 @@
                                 <label class="text-xs font-semibold text-discord-subtext block mb-1">Ret Mesajı</label>
                                 <textarea id="settingDmRet" rows="3" class="w-full bg-discord-dark text-xs text-white p-3 rounded-xl border border-discord-dark focus:border-discord-brand focus:outline-none resize-none"></textarea>
                             </div>
+                            </div>
                         </div>
 
                         <div class="bg-discord-dark/40 p-4 rounded-xl border border-discord-dark/70 space-y-3">
-                            <h4 class="font-semibold text-white text-sm"><i class="fa-solid fa-key text-discord-yellow mr-1"></i> Panel Şifresi Değiştir</h4>
+                            <div class="flex items-center justify-between">
+                                <h4 class="font-semibold text-white text-sm"><i class="fa-solid fa-key text-discord-yellow mr-1"></i> Panel Şifresi Değiştir</h4>
+                                <button type="button" onclick="katlaToggle('kat-sifre', this)" class="text-xs bg-discord-dark hover:bg-discord-darkest text-discord-light px-3 py-2 rounded-lg border border-discord-dark/80 transition"><i class="fa-solid fa-chevron-down kat-ok transition" style="display:inline-block"></i></button>
+                            </div>
+                            <div id="kat-sifre" class="hidden space-y-3">
                             <div id="kilitli-sifre">
                                 <p class="text-[11px] text-discord-subtext">Bu bölüm kilitli. Açmak için panel şifreni yaz.</p>
                                 <div class="flex gap-2 mt-2">
@@ -1279,13 +1289,18 @@
                                 <input type="password" id="sifreYeni2" placeholder="Yeni şifre (tekrar)" class="w-full bg-discord-dark text-xs text-white p-2.5 rounded-xl border border-discord-dark focus:border-discord-brand focus:outline-none">
                                 <button type="button" onclick="sifreDegistir()" class="text-xs bg-discord-brand text-white font-semibold px-4 py-2.5 rounded-xl hover:bg-opacity-90 transition">Şifreyi Değiştir</button>
                             </div>
+                            </div>
                         </div>
 
                         <div class="bg-discord-dark/40 p-4 rounded-xl border border-discord-dark/70 space-y-3">
                             <div class="flex items-center justify-between">
                                 <h4 class="font-semibold text-white text-sm"><i class="fa-solid fa-users text-discord-brand mr-1"></i> Aktif Oturumlar</h4>
-                                <button type="button" onclick="tumOturumKapat()" class="text-xs bg-discord-dark hover:bg-discord-darkest text-discord-light px-3 py-1.5 rounded-lg border border-discord-dark/80 transition">Diğerlerini Kapat</button>
+                                <div class="flex gap-2">
+                                    <button type="button" onclick="tumOturumKapat()" class="text-xs bg-discord-dark hover:bg-discord-darkest text-discord-light px-3 py-1.5 rounded-lg border border-discord-dark/80 transition">Diğerlerini Kapat</button>
+                                    <button type="button" onclick="katlaToggle('kat-oturum', this)" class="text-xs bg-discord-dark hover:bg-discord-darkest text-discord-light px-3 py-1.5 rounded-lg border border-discord-dark/80 transition"><i class="fa-solid fa-chevron-down kat-ok transition" style="display:inline-block"></i></button>
+                                </div>
                             </div>
+                            <div id="kat-oturum" class="hidden space-y-2">
                             <div id="kilitli-oturum">
                                 <p class="text-[11px] text-discord-subtext">Bu bölüm kilitli. Açmak için panel şifreni yaz.</p>
                                 <div class="flex gap-2 mt-2">
@@ -1296,6 +1311,7 @@
                             <div id="icerik-oturum" style="display:none" class="space-y-2">
                                 <div id="oturumListe" class="space-y-2"></div>
                             </div>
+                            </div>
                         </div>
 
                         <div class="bg-discord-dark/40 p-4 rounded-xl border border-discord-dark/70">
@@ -1304,11 +1320,14 @@
                                 <div class="flex gap-2">
                                     <button type="button" onclick="ozdenetimCalistir()" class="text-xs bg-discord-dark hover:bg-discord-darkest text-discord-light font-semibold px-4 py-2 rounded-lg border border-discord-dark/80 transition">Sistem Kontrolü</button>
                                     <button type="button" onclick="baglantiTesti()" class="text-xs bg-discord-brand hover:bg-opacity-90 text-white font-semibold px-4 py-2 rounded-lg transition">Test Et</button>
+                                    <button type="button" onclick="katlaToggle('kat-test', this)" class="text-xs bg-discord-dark hover:bg-discord-darkest text-discord-light font-semibold px-3 py-2 rounded-lg border border-discord-dark/80 transition"><i class="fa-solid fa-chevron-down kat-ok transition" style="display:inline-block"></i></button>
                                 </div>
                             </div>
+                            <div id="kat-test" class="hidden space-y-2">
                             <p class="text-[10px] text-discord-subtext mb-2">Discord API + VDS bağlantılarını tek tek dener, sorunu yazar.</p>
                             <div id="baglantiSonuc" class="space-y-1.5 text-xs font-mono"></div>
                             <div id="ozdenetimSonuc" class="space-y-1.5 text-xs font-mono mt-2"></div>
+                            </div>
                         </div>
 
                         <div class="pt-2">
@@ -2366,6 +2385,9 @@
 
         // Tab Switching Logic
         function switchTab(tabId) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            const anaAlan = document.querySelector('main');
+            if (anaAlan) anaAlan.scrollTop = 0;
             // Hide all contents
             const contents = document.querySelectorAll('.tab-content');
             contents.forEach(content => content.classList.add('hidden'));
@@ -2855,6 +2877,14 @@
             .catch(function(err) {
                 triggerNotification('İşlem başarısız: ' + err.message, 'error');
             });
+        }
+
+        function katlaToggle(id, btn) {
+            const d = document.getElementById(id);
+            if (!d) return;
+            d.classList.toggle('hidden');
+            const ok = btn ? btn.querySelector('.kat-ok') : null;
+            if (ok) ok.style.transform = d.classList.contains('hidden') ? '' : 'rotate(180deg)';
         }
 
         function clearTerminalLogs() {
@@ -3783,6 +3813,8 @@
         }
 
         window.addEventListener('load', function() {
+            try { if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; } catch (e) {}
+            window.scrollTo(0, 0);
             try { markaLogoUygula(); } catch (e) {}
             try { handleImplicitCallback(); } catch (e) {}
             try { handleOAuth2Callback(); } catch (e) {}
