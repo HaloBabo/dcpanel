@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- PANEL SURUM: 2026-09-26-C -->
+<!-- PANEL SURUM: 2026-09-26-D -->
 <html lang="tr" class="dark">
 <head>
     <meta charset="UTF-8">
@@ -420,7 +420,7 @@
                 <i class="fa-brands fa-discord text-lg"></i> Discord ile Giris Yap
             </button>
             <p class="text-[10px] text-discord-subtext mt-4">Discord Developer Portal'da Redirect URI olarak <b class="font-mono">http://localhost:8080</b> kayitli olmali.</p>
-            <p class="text-[9px] text-discord-subtext/60 mt-2 font-mono">sürüm 2026-09-26-C</p>
+            <p class="text-[9px] text-discord-subtext/60 mt-2 font-mono">sürüm 2026-09-26-D</p>
         </div>
     </div>
 
@@ -3078,6 +3078,10 @@
 
         function oniksDegistir() {
             const acik = localStorage.getItem('oniks') === '1';
+            if (!acik) {
+                localStorage.setItem('tema', 'dark');
+                temaUygula();
+            }
             localStorage.setItem('oniks', acik ? '' : '1');
             oniksUygula();
         }
