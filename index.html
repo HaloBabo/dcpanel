@@ -2440,7 +2440,8 @@
                 if (data && data.hata) throw new Error(data.hata);
                 r.status = durum === 'kabul' ? 'Kabul' : 'Ret';
                 if (typeof renderApplicationDetail === 'function' && activeApplicationKey) renderApplicationDetail(activeApplicationKey);
-                showBasvuruDetay(idx);
+                const m = document.getElementById('basvuruModal');
+                if (m) m.remove();
                 if (typeof bannerGuncelle === 'function') bannerGuncelle();
                 triggerNotification(durum === 'kabul' ? 'Başvuru onaylandı, rol verildi.' : 'Başvuru reddedildi.', 'success');
                 if (typeof panelLog === 'function') panelLog('MOD', r.user + ' başvurusu ' + (durum === 'kabul' ? 'onaylandı' : 'reddedildi') + ' (panel).', durum === 'kabul' ? 'text-discord-green' : 'text-discord-yellow');
