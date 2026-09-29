@@ -334,6 +334,7 @@
         #sidebar nav > button.nav-tab:not(.bg-discord-brand):nth-child(9) i { color: #FB923C; }
         #sidebar nav > button.nav-tab:not(.bg-discord-brand):nth-child(10) i { color: #949BA4; }
         #sidebar nav > button.nav-tab:not(.bg-discord-brand):nth-child(11) i { color: #A78BFA; }
+        #sidebar nav > button.nav-tab:not(.bg-discord-brand):nth-child(12) i { color: #FBBF24; }
         /* Canlilik esitleyici cubuklar */
         @keyframes eqZip { 0%,100% { height: 5px; } 50% { height: 14px; } }
         .eq-bar { width: 3px; background: #57F287; border-radius: 2px; animation: eqZip 1s ease-in-out infinite; }
@@ -526,6 +527,9 @@
             </button>
             <button onclick="switchTab('guide')" class="nav-tab w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-discord-subtext hover:bg-discord-dark hover:text-white">
                 <i class="fa-solid fa-code w-5 text-center"></i> Bağlantı Rehberi (API)
+            </button>
+            <button onclick="switchTab('yedek')" class="nav-tab w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-discord-subtext hover:bg-discord-dark hover:text-white">
+                <i class="fa-solid fa-box-archive w-5 text-center"></i> Yedekler
             </button>
         </nav>
 
@@ -1412,6 +1416,43 @@
                         <p class="text-xs text-discord-light">Önce Bot & Api Ayarları → Bağlantı Testi + Sistem Kontrolü çalıştırın. 401 = tekrar giriş yapın. 403 = anahtar/şifre yanlış. Zaman aşımı = bot kapalı ya da tunnel adresi değişmiş.</p>
                     </div>
 
+                </div>
+            </section>
+
+            <!-- TAB: YEDEKLER -->
+            <section id="tab-yedek" class="tab-content hidden space-y-6">
+                <div class="bg-discord-darker p-6 rounded-2xl border border-discord-dark/50">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2">
+                        <div>
+                            <h3 class="font-bold text-white text-lg flex items-center gap-2">
+                                <i class="fa-solid fa-box-archive text-discord-yellow"></i> Yedekler
+                            </h3>
+                            <p class="text-xs text-discord-subtext">Her gece 04:00 otomatik alınır, son 7 gün tutulur.</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="yedekYukle()" class="text-xs bg-discord-dark hover:bg-discord-darkest text-discord-light px-3 py-1.5 rounded-lg border border-discord-dark/80 transition">
+                                <i class="fa-solid fa-rotate-right"></i> Yenile
+                            </button>
+                            <button onclick="simdiYedekle()" class="text-xs bg-discord-brand hover:bg-opacity-90 text-white font-semibold px-4 py-1.5 rounded-lg transition">
+                                <i class="fa-solid fa-plus"></i> Şimdi Yedekle
+                            </button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto bg-discord-dark/30 rounded-xl border border-discord-dark/70 mt-4">
+                        <table class="w-full text-left min-w-[560px]">
+                            <thead>
+                                <tr class="text-[10px] uppercase tracking-wider text-discord-subtext">
+                                    <th class="py-3 px-3">Dosya</th>
+                                    <th class="py-3 px-3">Tarih</th>
+                                    <th class="py-3 px-3">Boyut</th>
+                                    <th class="py-3 px-3 text-right">İşlem</th>
+                                </tr>
+                            </thead>
+                            <tbody id="yedekListe">
+                                <tr><td colspan="4" class="py-6 text-center text-xs text-discord-subtext">Yükleniyor...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </section>
 
@@ -2303,6 +2344,81 @@
             });
         }
 
+        function boyutYaz(b) {
+            if (!b && b !== 0) return '—';
+            if (b < 1024) return b + ' B';
+            if (b < 1048576) return (b / 1024).toFixed(1) + ' KB';
+            return (b / 1048576).toFixed(1) + ' MB';
+        }
+
+        function yedekYukle() {
+            const kutu = document.getElementById('yedekListe');
+            fetch(panelKok() + '/panel/api/yedekler', { credentials: 'include' })
+            .then(function(res) {
+                return res.json().then(function(data) {
+                    if (!res.ok) throw new Error((data && data.hata) || ('HTTP ' + res.status));
+                    return data;
+                });
+            })
+            .then(function(liste) {
+                if (!Array.isArray(liste) || !liste.length) {
+                    kutu.innerHTML = '<tr><td colspan="4" class="py-6 text-center text-xs text-discord-subtext">Henüz yedek yok.</td></tr>';
+                    return;
+                }
+                kutu.innerHTML = liste.map(function(y) {
+                    return `<tr class="border-t border-discord-dark/60"><td class="py-2.5 pr-3 text-xs text-white font-mono">${y.ad}</td><td class="py-2.5 px-3 text-xs text-discord-subtext font-mono">${y.tarih || ''}</td><td class="py-2.5 px-3 text-xs text-discord-subtext font-mono">${boyutYaz(y.boyut)}</td><td class="py-2.5 pl-3 text-right whitespace-nowrap"><button onclick="yedekIndir('${y.ad}')" class="text-discord-green hover:text-white text-xs px-2" title="İndir"><i class="fa-solid fa-download"></i></button><button onclick="yedekSil('${y.ad}')" class="text-discord-subtext hover:text-discord-red text-xs px-2" title="Sil"><i class="fa-solid fa-trash"></i></button></td></tr>`;
+                }).join('');
+            })
+            .catch(function(err) {
+                kutu.innerHTML = '<tr><td colspan="4" class="py-6 text-center text-xs text-discord-red">Yüklenemedi: ' + err.message + '</td></tr>';
+            });
+        }
+
+        function simdiYedekle() {
+            fetch(panelKok() + '/panel/api/yedekle', { method: 'POST', credentials: 'include' })
+            .then(function(res) {
+                return res.json().then(function(data) {
+                    if (!res.ok) throw new Error((data && data.hata) || ('HTTP ' + res.status));
+                    return data;
+                });
+            })
+            .then(function(data) {
+                triggerNotification('Yedek alındı: ' + (data.ad || ''), 'success');
+                if (typeof panelLog === 'function') panelLog('YEDEK', 'Manuel yedek alındı.', 'text-discord-green');
+                yedekYukle();
+            })
+            .catch(function(err) {
+                triggerNotification('Yedeklenemedi: ' + err.message, 'error');
+            });
+        }
+
+        function yedekSil(ad) {
+            if (!confirm('"' + ad + '" silinsin mi?')) return;
+            fetch(panelKok() + '/panel/api/yedek/' + encodeURIComponent(ad), { method: 'DELETE', credentials: 'include' })
+            .then(function(res) {
+                return res.json().then(function(data) {
+                    if (!res.ok) throw new Error((data && data.hata) || ('HTTP ' + res.status));
+                    return data;
+                });
+            })
+            .then(function() {
+                triggerNotification('Yedek silindi.', 'success');
+                yedekYukle();
+            })
+            .catch(function(err) {
+                triggerNotification('Silinemedi: ' + err.message, 'error');
+            });
+        }
+
+        function yedekIndir(ad) {
+            const a = document.createElement('a');
+            a.href = panelKok() + '/panel/api/yedek/' + encodeURIComponent(ad);
+            a.download = ad;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(function() { a.remove(); }, 500);
+        }
+
         function ozdenetimCalistir() {
             const kutu = document.getElementById('ozdenetimSonuc');
             if (!kutu) return;
@@ -2486,13 +2602,15 @@
                 'basvuru': ['Başvurular', 'Etkinlik başvuru formlarına verilen cevapların istatistikleri'],
                 'logs': ['Canlı Konsol Logları', 'Bot konsol çıktılarını ve hataları anlık izleyin'],
                 'settings': ['Bot & API Ayarları', 'API anahtarlarınızı ve webhook bağlantılarını yapılandırın'],
-                'guide': ['Entegrasyon Rehberi', 'Bu web sitesini Discord botunuza bağlama adımları']
+                'guide': ['Entegrasyon Rehberi', 'Bu web sitesini Discord botunuza bağlama adımları'],
+                'yedek': ['Yedekler', 'Gece otomatik alınır, 7 gün tutulur']
             };
 
             if (titles[tabId]) {
                 document.getElementById('pageTitle').innerText = titles[tabId][0];
                 document.getElementById('pageSubTitle').innerText = titles[tabId][1];
             }
+            if (tabId === 'yedek' && typeof yedekYukle === 'function') yedekYukle();
         }
 
         function updateEmbedPreview() {
