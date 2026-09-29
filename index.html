@@ -1668,7 +1668,7 @@
                     </div>
                     <div class="min-w-0">
                         <h4 class="font-semibold text-white text-sm truncate">${escHtml(app.title)}</h4>
-                        <p class="text-xs text-discord-subtext">${app.totalSubmissions} başvuru • ${escHtml(app.lastUpdated)}` + (bekleyen ? ` • <b class="text-discord-yellow">${bekleyen} bekleyen</b>` : '') + `</p>
+                        <p class="text-xs text-discord-subtext">${app.totalSubmissions} başvuru • ${escHtml(app.lastUpdated)}` + (bekleyen ? ` • <b class="text-discord-yellow">${bekleyen} bekleyen</b>` : '') + (app.acik === false ? ` • <b class="text-discord-red">SONA ERDİ</b>` : (app.acik ? ` • <b class="text-discord-green">AÇIK</b>` : '')) + `</p>
                     </div>
                 `;
                 container.appendChild(btn);
@@ -1798,6 +1798,8 @@
                         <span class="text-xs bg-${app.accent}/10 text-${app.accent} font-semibold px-3 py-1.5 rounded-full">
                             <i class="fa-solid fa-chart-simple"></i> Cevap İstatistikleri
                         </span>
+                        ${(app.acik === true) ? '<span class="text-xs bg-discord-green/10 text-discord-green font-semibold px-3 py-1.5 rounded-full"><i class="fa-solid fa-check"></i> ALIM AÇIK</span>' : ''}
+                        ${(app.acik === false) ? '<span class="text-xs bg-discord-red/10 text-discord-red font-semibold px-3 py-1.5 rounded-full"><i class="fa-solid fa-ban"></i> SONA ERDİ</span>' : ''}
                         ${silBtn}
                     </div>
                 </div>
