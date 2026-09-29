@@ -3200,6 +3200,18 @@
             return base.replace(/\/api\/applications.*$/, '');
         }
 
+        function panelIstek(url, secenek) {
+            return fetch(url, secenek).then(function(res) {
+                return res.text().then(function(metin) {
+                    let veri = {};
+                    try { veri = JSON.parse(metin); }
+                    catch (e) { throw new Error('Sunucuya ulasilamadi (HTTP ' + res.status + ')'); }
+                    if (!res.ok) throw new Error((veri && veri.hata) || ('HTTP ' + res.status));
+                    return veri;
+                });
+            });
+        }
+
         const SABIT_CLIENT_ID = "1549108116971458610";
 
         function istemciId() {
@@ -3241,16 +3253,12 @@
                 document.getElementById('gateApiUrl').value = gapi;
                 localStorage.setItem('basvuru_api_url', gapi);
             }
-            fetch(panelKok() + '/panel/sifre', {
+            panelIstek(panelKok() + '/panel/sifre', {
                 method: 'POST',
                 credentials: 'include',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ sifre: s })
             })
-            .then(res => res.json().then(function(data) {
-                if (!res.ok) throw new Error((data && data.hata) || ('HTTP ' + res.status));
-                return data;
-            }))
             .then(data => {
                 document.getElementById('gateSifre').value = '';
                 window.history.replaceState({}, document.title, window.location.pathname);
