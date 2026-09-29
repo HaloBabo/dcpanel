@@ -279,6 +279,8 @@
         #statGrid > div:hover { transform: translateY(-3px); }
         .server-card { transition: transform 0.2s ease, border-color 0.2s ease; }
         .server-card:hover { transform: translateY(-2px); }
+        .application-tab { transition: transform 0.15s ease, border-color 0.2s ease, box-shadow 0.2s ease; }
+        .application-tab:hover { transform: translateX(3px); box-shadow: 0 4px 14px rgba(0,0,0,0.35); }
         @keyframes shimmer { 0% { background-position: -400px 0; } 100% { background-position: 400px 0; } }
         .skeleton { background: linear-gradient(90deg, #2B2D31 25%, #3a3d42 50%, #2B2D31 75%); background-size: 800px 100%; animation: shimmer 1.2s infinite linear; border-radius: 12px; }
         @keyframes spin { to { transform: rotate(360deg); } }
@@ -794,7 +796,7 @@
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                         <div>
                             <h3 class="font-bold text-white text-lg">Sunucu Listesi & Moderasyon</h3>
-                            <p class="text-xs text-discord-subtext">Botun ekli olduğu sunucuları yönetin ve modülleri aktifleştirin.</p>
+                            <p id="sunucuAltBaslik" class="text-xs text-discord-subtext">Botun ekli olduğu sunucuları yönetin ve modülleri aktifleştirin.</p>
                         </div>
                         <div class="relative">
                             <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-discord-subtext text-xs"></i>
@@ -944,6 +946,14 @@
                                         <input type="color" id="embedColorPicker" value="#5865F2" oninput="syncColorInput(this.value)" class="w-10 h-9 rounded-lg bg-discord-dark border border-discord-dark/80 cursor-pointer p-1">
                                         <input type="text" id="embedColorHex" value="#5865F2" oninput="syncColorPicker(this.value)" class="w-full bg-discord-dark text-xs text-white p-2.5 rounded-xl border border-discord-dark/80 focus:border-discord-brand focus:outline-none font-mono">
                                     </div>
+                                    <div class="flex gap-2 mt-2">
+                                        <button type="button" onclick="renkSec('#5865F2')" class="w-6 h-6 rounded-full border border-white/20 transition hover:scale-110" style="background:#5865F2" title="Mavi"></button>
+                                        <button type="button" onclick="renkSec('#57F287')" class="w-6 h-6 rounded-full border border-white/20 transition hover:scale-110" style="background:#57F287" title="Yeşil"></button>
+                                        <button type="button" onclick="renkSec('#FEE75C')" class="w-6 h-6 rounded-full border border-white/20 transition hover:scale-110" style="background:#FEE75C" title="Sarı"></button>
+                                        <button type="button" onclick="renkSec('#EB459E')" class="w-6 h-6 rounded-full border border-white/20 transition hover:scale-110" style="background:#EB459E" title="Pembe"></button>
+                                        <button type="button" onclick="renkSec('#ED4245')" class="w-6 h-6 rounded-full border border-white/20 transition hover:scale-110" style="background:#ED4245" title="Kırmızı"></button>
+                                        <button type="button" onclick="renkSec('#22D3EE')" class="w-6 h-6 rounded-full border border-white/20 transition hover:scale-110" style="background:#22D3EE" title="Camgöbeği"></button>
+                                    </div>
                                 </div>
                             </div>
 
@@ -1061,7 +1071,8 @@
 
                         <div>
                             <label class="text-xs font-semibold text-discord-subtext block mb-1">Mesaj İçeriği</label>
-                            <textarea id="commandMessage" rows="4" placeholder="Gönderilecek mesajı buraya yazın (Düz Mesaj için zorunlu)..." class="w-full bg-discord-dark text-xs text-white p-3 rounded-xl border border-discord-dark focus:border-discord-brand focus:outline-none resize-none"></textarea>
+                            <textarea id="commandMessage" rows="4" oninput="harfSay('commandMessage','sayacKomut')" placeholder="Gönderilecek mesajı buraya yazın (Düz Mesaj için zorunlu)..." class="w-full bg-discord-dark text-xs text-white p-3 rounded-xl border border-discord-dark focus:border-discord-brand focus:outline-none resize-none"></textarea>
+                            <p class="text-[10px] text-right text-discord-subtext mt-1"><span id="sayacKomut">0</span>/2000</p>
                         </div>
 
                         <button type="submit" class="bg-discord-brand hover:bg-opacity-90 text-white text-xs font-semibold px-6 py-3 rounded-xl transition flex items-center gap-2 shadow-lg shadow-discord-brand/20">
@@ -1091,7 +1102,8 @@
                         </div>
                         <div>
                             <label class="text-xs font-semibold text-discord-subtext block mb-1">Mesaj İçeriği</label>
-                            <textarea id="topluMesaj" rows="4" placeholder="Tüm kanallara gönderilecek mesaj..." class="w-full bg-discord-dark text-xs text-white p-3 rounded-xl border border-discord-dark focus:border-discord-brand focus:outline-none resize-none"></textarea>
+                            <textarea id="topluMesaj" rows="4" oninput="harfSay('topluMesaj','sayacToplu')" placeholder="Tüm kanallara gönderilecek mesaj..." class="w-full bg-discord-dark text-xs text-white p-3 rounded-xl border border-discord-dark focus:border-discord-brand focus:outline-none resize-none"></textarea>
+                            <p class="text-[10px] text-right text-discord-subtext mt-1"><span id="sayacToplu">0</span>/2000</p>
                         </div>
                         <button type="submit" class="bg-discord-fuchsia hover:bg-opacity-90 text-white text-xs font-semibold px-6 py-3 rounded-xl transition flex items-center gap-2 shadow-lg">
                             <i class="fa-solid fa-bullhorn"></i> Tümüne Gönder
@@ -1155,6 +1167,13 @@
                     </div>
 
                     <!-- Terminal Box -->
+                    <div class="flex gap-2 mb-2">
+                        <button onclick="logFiltrele('')" data-logfiltre="" class="log-cip text-[11px] px-3 py-1.5 rounded-lg border border-discord-brand/60 bg-discord-brand/20 text-white transition">Tümü</button>
+                        <button onclick="logFiltrele('INFO')" data-logfiltre="INFO" class="log-cip text-[11px] px-3 py-1.5 rounded-lg border border-discord-dark/80 text-discord-subtext bg-discord-dark hover:text-white transition">INFO</button>
+                        <button onclick="logFiltrele('CMD')" data-logfiltre="CMD" class="log-cip text-[11px] px-3 py-1.5 rounded-lg border border-discord-dark/80 text-discord-subtext bg-discord-dark hover:text-white transition">CMD</button>
+                        <button onclick="logFiltrele('HATA')" data-logfiltre="HATA" class="log-cip text-[11px] px-3 py-1.5 rounded-lg border border-discord-dark/80 text-discord-subtext bg-discord-dark hover:text-white transition">HATA</button>
+                        <button onclick="logFiltrele('MOD')" data-logfiltre="MOD" class="log-cip text-[11px] px-3 py-1.5 rounded-lg border border-discord-dark/80 text-discord-subtext bg-discord-dark hover:text-white transition">MOD</button>
+                    </div>
                     <div class="bg-discord-darkest rounded-xl p-4 font-mono text-xs text-discord-light h-96 overflow-y-auto border border-discord-dark shadow-inner space-y-1.5 terminal-glow" id="fullTerminalLog">
                         <div class="text-discord-subtext">[SYSTEM] Terminal oturumu başlatıldı. WebSocket dinleniyor...</div>
                         <div><span class="text-discord-green">[2026-09-24 19:05:12] [INFO]</span> Bot Discord API'ye başarıyla bağlandı.</div>
@@ -1566,8 +1585,13 @@
         const SAYFA_BOY = 50;
         const appFiltre = { yas: new Set(), orjinal: new Set(), durum: new Set() };
 
-        function yasKova(y) {
-            y = parseInt(y, 10);
+        function avSor(u) {
+            const varsayilan = 'https://cdn.discordapp.com/embed/avatars/0.png';
+            if (typeof u !== 'string' || u.indexOf('https://cdn.discordapp.com/') !== 0) return varsayilan;
+            return u;
+        }
+
+        function yasKova(y) {            y = parseInt(y, 10);
             if (isNaN(y)) return null;
             if (y <= 15) return '13-15';
             if (y <= 18) return '16-18';
@@ -1733,15 +1757,20 @@
             const filtreHTML = `<div class="flex flex-wrap items-center gap-2 mt-3"><span class="text-[10px] font-bold text-discord-subtext uppercase">Yaş:</span>${filtreCip('yas', '13-15', '13-15')}${filtreCip('yas', '16-18', '16-18')}${filtreCip('yas', '19-21', '19-21')}${filtreCip('yas', '22+', '22+')}<span class="text-[10px] font-bold text-discord-subtext uppercase ml-2">Orjinal:</span>${filtreCip('orjinal', 'Evet', 'Evet')}${filtreCip('orjinal', 'Hayır', 'Hayır')}<span class="text-[10px] font-bold text-discord-subtext uppercase ml-2">Durum:</span>${filtreCip('durum', 'Bekliyor', 'Bekliyor')}${filtreCip('durum', 'Kabul', 'Kabul')}${filtreCip('durum', 'Ret', 'Ret')}</div>`;
 
             const questionCards = app.questions.map((q, index) => {
+                const qt = (q.text || '').toLocaleLowerCase('tr-TR');
                 let example = '';
-                if (q.type === 'number') {
-                    example = '<div class="mt-2 bg-discord-dark text-discord-subtext text-xs p-3 rounded-lg border border-discord-dark/80">Örn: 18</div>';
-                } else if (q.type === 'text') {
+                if (qt.indexOf('nick') !== -1 && qt.indexOf('orijinal') === -1 && qt.indexOf('orjinal') === -1) {
                     example = '<div class="mt-2 bg-discord-dark text-discord-subtext text-xs p-3 rounded-lg border border-discord-dark/80">Minecraft oyun içi adınızı yazın</div>';
-                } else if (q.type === 'choice') {
+                } else if (qt.indexOf('onay') !== -1) {
+                    example = '<div class="mt-2 bg-discord-dark text-discord-subtext text-xs p-3 rounded-lg border border-discord-dark/80">Örn: Onaylıyorum</div>';
+                } else if (q.type === 'number') {
+                    example = '<div class="mt-2 bg-discord-dark text-discord-subtext text-xs p-3 rounded-lg border border-discord-dark/80">Örn: 18</div>';
+                } else if (q.type === 'choice' && q.options) {
                     example = `<div class="mt-2 bg-discord-dark text-discord-subtext text-xs p-3 rounded-lg border border-discord-dark/80">${q.options.join(' / ')}</div>`;
-                } else {
+                } else if (q.type === 'textarea') {
                     example = '<div class="mt-2 bg-discord-dark text-discord-subtext text-xs p-3 rounded-lg border border-discord-dark/80 min-h-16">İsteğe bağlı...</div>';
+                } else {
+                    example = '<div class="mt-2 bg-discord-dark text-discord-subtext text-xs p-3 rounded-lg border border-discord-dark/80">Cevabınızı yazın</div>';
                 }
 
                 return `
@@ -1788,8 +1817,13 @@
                 return `
                 <tr onclick="showBasvuruDetay(${gidx})" class="border-t border-discord-dark/60 hover:bg-discord-dark/40 cursor-pointer transition">
                     <td class="py-3 pr-3">
-                        <div class="font-semibold text-white text-xs">${escHtml(r.user)}</div>
-                        <div class="text-[10px] text-discord-subtext">${escHtml(r.nick)}</div>
+                        <div class="flex items-center gap-2">
+                            <img src="${avSor(r.avatar)}" loading="lazy" class="w-8 h-8 rounded-full flex-shrink-0 bg-discord-dark" alt="">
+                            <div class="min-w-0">
+                                <div class="font-semibold text-white text-xs truncate">${escHtml(r.user)}</div>
+                                <div class="text-[10px] text-discord-subtext truncate">${escHtml(r.nick)}</div>
+                            </div>
+                        </div>
                         ${statusBadge}
                     </td>
                     <td class="py-3 px-3 text-xs text-discord-light">${escHtml(r.age ?? '—')}</td>
@@ -2326,10 +2360,10 @@
             const sorular = (currentApp && currentApp.questions) || [];
             const cevapla = (qtext) => {
                 const t = (qtext || '').toLocaleLowerCase('tr-TR');
+                if (t.indexOf('orijinal') !== -1 || t.indexOf('orjinal') !== -1) return r.original || '—';
                 if (t.indexOf('nick') !== -1 || t.indexOf('minecraft') !== -1) return r.nick || '—';
                 if (t.indexOf('daha önce') !== -1 || t.indexOf('daha once') !== -1) return r.lma || '—';
                 if (t.indexOf('yaş') !== -1 || t.indexOf('yas') !== -1) return (r.age ?? '—');
-                if (t.indexOf('orijinal') !== -1 || t.indexOf('orjinal') !== -1) return r.original || '—';
                 return r.note || '—';
             };
             const sColors = { 'Kabul': 'text-discord-green bg-discord-green/10', 'Ret': 'text-discord-red bg-discord-red/10', 'Bekliyor': 'text-discord-yellow bg-discord-yellow/10' };
@@ -2350,9 +2384,12 @@
             overlay.innerHTML = `
                 <div class="bg-discord-darker border border-discord-dark rounded-2xl max-w-lg w-full max-h-[85vh] overflow-y-auto shadow-2xl">
                     <div class="p-5 border-b border-discord-dark/60 flex items-start justify-between gap-3 sticky top-0 bg-discord-darker">
-                        <div>
-                            <h3 class="font-bold text-white text-lg">${escHtml(r.user)}</h3>
-                            <p class="text-xs text-discord-subtext mt-0.5">${escHtml(r.nick || '')} • ${escHtml(r.date || '')} ${escHtml(r.time || '')}</p>
+                        <div class="flex items-center gap-3">
+                            <img src="${avSor(r.avatar)}" class="w-11 h-11 rounded-full flex-shrink-0 bg-discord-dark" alt="">
+                            <div class="min-w-0">
+                                <h3 class="font-bold text-white text-lg truncate">${escHtml(r.user)}</h3>
+                                <p class="text-xs text-discord-subtext mt-0.5 truncate">${escHtml(r.nick || '')} • ${escHtml(r.date || '')} ${escHtml(r.time || '')}</p>
+                            </div>
                         </div>
                         <div class="flex items-center gap-2">
                             ${rozet}
@@ -2362,11 +2399,20 @@
                     <div class="p-5 space-y-3">${satirlar}</div>
                     ${(r.mesaj && r.status === 'Bekliyor') ? `
                     <div class="p-4 border-t border-discord-dark/60 flex gap-3 sticky bottom-0 bg-discord-darker">
-                        <button onclick="kararVer(${idx}, 'kabul')" class="flex-1 bg-discord-green text-black text-sm font-bold py-2.5 rounded-xl hover:opacity-90 transition">Onayla</button>
-                        <button onclick="kararVer(${idx}, 'ret')" class="flex-1 bg-discord-red text-white text-sm font-bold py-2.5 rounded-xl hover:opacity-90 transition">Reddet</button>
+                        <button onclick="kararVerMesaj('${r.mesaj}', '${r.sunucu}', 'kabul')" class="flex-1 bg-discord-green text-black text-sm font-bold py-2.5 rounded-xl hover:opacity-90 transition">Onayla</button>
+                        <button onclick="kararVerMesaj('${r.mesaj}', '${r.sunucu}', 'ret')" class="flex-1 bg-discord-red text-white text-sm font-bold py-2.5 rounded-xl hover:opacity-90 transition">Reddet</button>
                     </div>` : ''}
                 </div>`;
             document.body.appendChild(overlay);
+        }
+
+        function kararVerMesaj(mesaj, sunucu, durum) {
+            const i = (currentFiltered || []).findIndex(x => String(x.mesaj) === String(mesaj));
+            if (i === -1) {
+                triggerNotification('Kayıt listede yok, listeyi yenileyin.', 'error');
+                return;
+            }
+            kararVer(i, durum);
         }
 
         function kararVer(idx, durum) {
@@ -2485,6 +2531,17 @@
             }
         }
 
+        function renkSec(hex) {
+            document.getElementById('embedColorPicker').value = hex;
+            syncColorInput(hex);
+        }
+
+        function harfSay(alanId, sayacId) {
+            const a = document.getElementById(alanId);
+            const s = document.getElementById(sayacId);
+            if (a && s) s.innerText = a.value.length;
+        }
+
         function copyEmbedJSON() {
             const json = {
                 embeds: [{
@@ -2587,6 +2644,7 @@
             if (miniLog) { miniLog.innerHTML += entry; miniLog.scrollTop = miniLog.scrollHeight; while (miniLog.children.length > 50) miniLog.removeChild(miniLog.firstChild); }
             const lu = document.getElementById('lastUpdatedTime');
             if (lu) lu.innerText = time;
+            if (typeof logFiltreUygula === 'function') logFiltreUygula();
         }
 
         function bumpDashboardSent() {
@@ -2594,6 +2652,19 @@
             localStorage.setItem('dashboard_sent', String(n));
             const el = document.getElementById('statCommands');
             if (el) el.innerText = n.toLocaleString('tr-TR');
+        }
+
+        function animSayi(el, hedef) {
+            if (!el) return;
+            hedef = Math.max(0, Math.round(hedef) || 0);
+            if (hedef <= 0) { el.innerText = '0'; return; }
+            const baslangic = performance.now(), sure = 900;
+            function kare(t) {
+                const p = Math.min(1, (t - baslangic) / sure);
+                el.innerText = Math.round(hedef * (1 - Math.pow(1 - p, 3))).toLocaleString('tr-TR');
+                if (p < 1) requestAnimationFrame(kare);
+            }
+            requestAnimationFrame(kare);
         }
 
         function buildEmbedJSON() {
@@ -2906,6 +2977,23 @@
             d.classList.toggle('hidden');
             const ok = btn ? btn.querySelector('.kat-ok') : null;
             if (ok) ok.style.transform = d.classList.contains('hidden') ? '' : 'rotate(180deg)';
+        }
+
+        let logFiltre = '';
+
+        function logFiltreUygula() {
+            document.querySelectorAll('#fullTerminalLog > div').forEach(function(d) {
+                d.style.display = (!logFiltre || d.textContent.indexOf('[' + logFiltre + ']') !== -1) ? '' : 'none';
+            });
+            document.querySelectorAll('.log-cip').forEach(function(b) {
+                const aktif = b.dataset.logfiltre === logFiltre;
+                b.className = 'log-cip text-[11px] px-3 py-1.5 rounded-lg border transition ' + (aktif ? 'border-discord-brand/60 bg-discord-brand/20 text-white' : 'border-discord-dark/80 text-discord-subtext bg-discord-dark hover:text-white');
+            });
+        }
+
+        function logFiltrele(t) {
+            logFiltre = (logFiltre === t) ? '' : t;
+            logFiltreUygula();
         }
 
         function clearTerminalLogs() {
@@ -3674,11 +3762,18 @@
                     }
                 }
                 var sg = document.getElementById('statGuilds');
-                if (sg) sg.innerText = guilds.length;
                 var total = 0;
                 guilds.forEach(function(g) { if (g.uyeler) total += g.uyeler; });
                 var su = document.getElementById('statUsers');
-                if (su) su.innerText = total > 0 ? total.toLocaleString('tr-TR') : guilds.length + ' sunucu';
+                if (!window.__sayacYapildi) {
+                    window.__sayacYapildi = true;
+                    animSayi(sg, guilds.length);
+                    if (total > 0) animSayi(su, total);
+                    else if (su) su.innerText = guilds.length + ' sunucu';
+                } else {
+                    if (sg) sg.innerText = guilds.length;
+                    if (su) su.innerText = total > 0 ? total.toLocaleString('tr-TR') : guilds.length + ' sunucu';
+                }
                 renderGuildList(guilds);
                 if (typeof doldurSunucuSecimi === 'function') doldurSunucuSecimi(guilds);
                 yukBit();
@@ -3725,6 +3820,8 @@
                     + '</div></div>';
             });
             c.innerHTML = html;
+            var altBaslik = document.getElementById('sunucuAltBaslik');
+            if (altBaslik) altBaslik.innerText = 'Botun ekli ' + guilds.length + ' sunucuyu yönetin.';
             var mods = ['welcome', 'autorole', 'antispam'];
             c.querySelectorAll('.server-card input[type="checkbox"]').forEach(function(cb, i) {
                 var g = guilds[Math.floor(i / 3)];
