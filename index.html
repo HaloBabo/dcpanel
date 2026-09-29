@@ -300,6 +300,25 @@
         /* Ust yukleme cubugu */
         #ustCubuk { position: fixed; top: 0; left: -30%; height: 3px; width: 30%; z-index: 1001; background: linear-gradient(90deg, #5865F2, #EB459E); border-radius: 0 3px 3px 0; opacity: 0; transition: opacity 0.3s; animation: cubukKay 1.2s ease-in-out infinite; pointer-events: none; }
         @keyframes cubukKay { 0% { left: -30%; } 100% { left: 100%; } }
+        /* Kart giris animasyonu (kademeli) */
+        .tab-content > * { animation: fadeUp 0.35s ease backwards; }
+        .tab-content > *:nth-child(2) { animation-delay: .06s; }
+        .tab-content > *:nth-child(3) { animation-delay: .12s; }
+        .tab-content > *:nth-child(4) { animation-delay: .18s; }
+        /* Istatistik kartlari ust serit */
+        #statGrid > div { position: relative; overflow: hidden; }
+        #statGrid > div::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; opacity: .8; }
+        #statGrid > div:nth-child(1)::before { background: #5865F2; }
+        #statGrid > div:nth-child(2)::before { background: #57F287; }
+        #statGrid > div:nth-child(3)::before { background: #FEE75C; }
+        #statGrid > div:nth-child(4)::before { background: #EB459E; }
+        /* Karsilama bandi isilti */
+        #hosgeldinBand { position: relative; overflow: hidden; }
+        #hosgeldinBand::after { content: ''; position: absolute; top: 0; bottom: 0; width: 120px; background: linear-gradient(100deg, transparent, rgba(255,255,255,0.08), transparent); animation: parlama 5s ease-in-out infinite; pointer-events: none; }
+        @keyframes parlama { 0% { left: -140px; } 60%, 100% { left: 110%; } }
+        /* Birincil buton basma efekti */
+        button.bg-discord-brand:active { transform: scale(0.98); }
+        :focus-visible { outline: 2px solid #5865F2; outline-offset: 2px; }
         /* Sol menu guzellestirme */
         #sidebar nav > button.nav-tab { position: relative; transition: transform 0.15s ease, background-color 0.2s ease; }
         #sidebar nav > button.nav-tab:hover { transform: translateX(3px); }
@@ -622,7 +641,7 @@
             <!-- TAB 1: OVERVIEW -->
             <section id="tab-overview" class="tab-content space-y-6">
                 <!-- Karsilama Bandi -->
-                <div class="rounded-2xl p-5 border border-discord-brand/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3" style="background:linear-gradient(135deg, rgba(88,101,242,0.22), rgba(235,69,158,0.12));">
+                <div id="hosgeldinBand" class="rounded-2xl p-5 border border-discord-brand/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3" style="background:linear-gradient(135deg, rgba(88,101,242,0.22), rgba(235,69,158,0.12));">
                     <div>
                         <h3 class="font-bold text-white text-lg flex items-center gap-2">Kontrol Paneli
                             <span id="veriDurumu" class="inline-flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-1 rounded-full bg-discord-yellow/10 text-discord-yellow">
@@ -3738,7 +3757,7 @@
                 if (keys.length === 0) {
                     activeApplicationKey = null;
                     renderApplicationTypeList();
-                    document.getElementById('applicationDetail').innerHTML = '<div class="p-8 text-center"><p class="font-bold text-white text-lg">Henüz etkinlik yok</p><p class="text-xs text-discord-subtext mt-2">Botta !etkinlik_ac ile etkinlik açınca burada görünür.</p></div>';
+                    document.getElementById('applicationDetail').innerHTML = '<div class="p-8 text-center"><i class="fa-solid fa-calendar-xmark text-4xl text-discord-subtext"></i><div class="h-3"></div><p class="font-bold text-white text-lg">Henüz etkinlik yok</p><p class="text-xs text-discord-subtext mt-2">Botta !etkinlik_ac ile etkinlik açınca burada görünür.</p></div>';
                     return;
                 }
                 if (!applicationsData[activeApplicationKey]) activeApplicationKey = keys[0];
